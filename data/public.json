@@ -1,0 +1,39 @@
+{
+  "asOf": "2026-08-14",
+  "generatedAt": "2026-08-17T21:36:16",
+  "baseCurrency": "USD",
+  "nav": 2589.665171697,
+  "cash": 0.915171697,
+  "unrealizedPnl": -536.3543649999997,
+  "holdings": [
+    {
+      "symbol": "TEM",
+      "description": "TEMPUS AI INC-CL A",
+      "assetClass": "STK",
+      "exchange": "NASDAQ",
+      "quantity": 43,
+      "markPrice": 52.1,
+      "averageCost": 63.696261441860464,
+      "costBasis": 2738.939242,
+      "marketValue": 2240.3,
+      "unrealizedPnl": -498.63924199999974,
+      "weight": 0.8650925318395266,
+      "currency": "USD"
+    },
+    {
+      "symbol": "LFMD",
+      "description": "LIFEMD INC",
+      "assetClass": "STK",
+      "exchange": "NASDAQ",
+      "quantity": 101,
+      "markPrice": 3.45,
+      "averageCost": 3.8234170594059407,
+      "costBasis": 386.165123,
+      "marketValue": 348.45,
+      "unrealizedPnl": -37.715123000000006,
+      "weight": 0.13455407432910013,
+      "currency": "USD"
+    }
+  ],
+  "trades": []
+}

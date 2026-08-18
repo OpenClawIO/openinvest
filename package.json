@@ -1,0 +1,30 @@
+{
+  "name": "openinvest",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "sync": "tsx scripts/sync-flex.ts",
+    "rebuild": "tsx scripts/rebuild-snapshot.ts"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.2.5",
+    "next": "^16.3.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.8",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^16.3.1",
+    "tailwindcss": "^4.1.12",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

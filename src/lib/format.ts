@@ -1,0 +1,50 @@
+export function formatMoney(value: number | null | undefined, digits = 2) {
+  if (value == null || Number.isNaN(value)) return "—";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  }).format(value);
+}
+
+export function formatSignedMoney(value: number) {
+  const formatted = formatMoney(Math.abs(value));
+  if (value > 0) return `+${formatted}`;
+  if (value < 0) return `−${formatted}`;
+  return formatted;
+}
+
+export function formatQty(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 4,
+  }).format(value);
+}
+
+export function formatPct(value: number, digits = 1) {
+  const abs = `${(Math.abs(value) * 100).toFixed(digits)}%`;
+  if (value > 0) return `+${abs}`;
+  if (value < 0) return `−${abs}`;
+  return abs;
+}
+
+export function formatWeight(value: number) {
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+export function formatLongDate(isoDate: string, locale: "en" | "zh" = "en") {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-GB", {
+    day: "numeric",
+    month: locale === "zh" ? "long" : "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+export function pnlTone(value: number): "up" | "down" | "flat" {
+  if (value > 0) return "up";
+  if (value < 0) return "down";
+  return "flat";
+}
