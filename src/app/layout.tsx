@@ -1,23 +1,18 @@
-import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const sans = IBM_Plex_Sans({
+const sans = Geist({
   subsets: ["latin"],
-  weight: ["400", "500"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 const display = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-display",
-});
-
-const num = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-num",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,14 +21,31 @@ export const metadata: Metadata = {
     "A public Interactive Brokers snapshot. Updated after the US cash close. Not investment advice. 个人盈透账户日终快照，不构成投资建议。",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#1a1622",
+};
+
+const localeBoot = `(function(){try{var q=new URLSearchParams(location.search).get("lang");var s=localStorage.getItem("openinvest.locale");var zh=q==="zh"||(q!=="en"&&(s==="zh"||(!s&&/^zh/i.test(navigator.language))));var r=document.documentElement;r.lang=zh?"zh-CN":"en";r.dataset.locale=zh?"zh":"en"}catch(e){}})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${num.variable}`}>
-      <body className={sans.className}>{children}</body>
+    <html
+      lang="en"
+      data-locale="en"
+      suppressHydrationWarning
+      className={`${sans.variable} ${display.variable}`}
+    >
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: localeBoot }} />
+        {children}
+      </body>
     </html>
   );
 }

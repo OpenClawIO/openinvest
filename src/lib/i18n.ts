@@ -69,10 +69,15 @@ export function detectLocale(): Locale {
   return navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en";
 }
 
+export function applyDocumentLocale(locale: Locale) {
+  document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
+  document.documentElement.dataset.locale = locale;
+}
+
 export function persistLocale(locale: Locale) {
   window.localStorage.setItem("openinvest.locale", locale);
   const url = new URL(window.location.href);
   url.searchParams.set("lang", locale);
   window.history.replaceState({}, "", url);
-  document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
+  applyDocumentLocale(locale);
 }

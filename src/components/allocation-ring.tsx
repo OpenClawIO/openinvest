@@ -55,6 +55,7 @@ export function AllocationRing({
   centerLabel,
   centerValue,
   ariaLabel,
+  locale,
 }: {
   slices: RingSlice[];
   activeId: string | null;
@@ -63,17 +64,17 @@ export function AllocationRing({
   centerLabel: string;
   centerValue: string;
   ariaLabel: string;
+  locale: "en" | "zh";
 }) {
   const size = 320;
   const arcs = toArcs(slices, size, activeId);
-  const label = /[A-Za-z]/.test(centerLabel)
-    ? centerLabel.toUpperCase()
-    : centerLabel;
+  const english = locale === "en";
+  const label = english ? centerLabel.toUpperCase() : centerLabel;
 
   return (
     <svg
       viewBox={`0 0 ${size} ${size}`}
-      className="w-full max-w-[300px]"
+      className="w-full max-w-[210px] touch-manipulation sm:max-w-[260px] lg:max-w-[300px]"
       role="img"
       aria-label={ariaLabel}
     >
@@ -113,21 +114,24 @@ export function AllocationRing({
       })}
       <text
         x={size / 2}
-        y={size / 2 - 6}
+        y={size / 2 - 8}
         textAnchor="middle"
         fill="var(--text)"
-        fontSize="28"
+        fontSize="30"
         fontFamily="var(--font-display), serif"
+        letterSpacing="-0.02em"
       >
         {centerValue}
       </text>
       <text
         x={size / 2}
-        y={size / 2 + 18}
+        y={size / 2 + 16}
         textAnchor="middle"
         fill="var(--muted)"
-        fontSize={/[A-Za-z]/.test(centerLabel) ? 10 : 13}
-        letterSpacing={/[A-Za-z]/.test(centerLabel) ? "0.18em" : "0.06em"}
+        fontSize={english ? 10 : 13}
+        fontWeight={500}
+        letterSpacing={english ? "0.14em" : "0.06em"}
+        fontFamily="var(--font-sans), PingFang SC, Hiragino Sans GB, Noto Sans SC, sans-serif"
       >
         {label}
       </text>

@@ -58,29 +58,32 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
   };
 
   return (
-    <div className="relative mx-auto min-h-screen max-w-[1120px] px-5 pb-24 pt-6 sm:px-8">
-      <header className="glass rise sticky top-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-[18px] px-5 py-3">
+    <div className="page-shell relative mx-auto min-h-dvh max-w-[1120px]">
+      <header className="glass rise sticky top-[max(0.5rem,env(safe-area-inset-top))] z-20 flex items-center justify-between gap-3 rounded-[16px] px-3 py-2.5 sm:top-4 sm:gap-4 sm:rounded-[18px] sm:px-5 sm:py-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-medium tracking-[0.28em] text-[var(--copper)]">
+          <p className="brand-mark text-[10px] text-[var(--copper)] sm:text-[11px]">
             {t.brand}
           </p>
-          <p className="mt-1 text-sm text-[var(--muted)]">{t.tagline}</p>
+          <p className="mt-1 hidden text-sm text-[var(--muted)] sm:block">{t.tagline}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
-          <p className="font-num text-xs text-[var(--muted)]">
+        <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+          <p className="hidden font-num text-xs text-[var(--muted)] sm:block">
             {asOf} · T+1
           </p>
           <LanguageSwitch />
         </div>
       </header>
 
-      <section className="mt-14 grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
+      <section className="mt-8 grid items-center gap-8 sm:mt-12 lg:mt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] lg:gap-10">
         <div className="rise" style={{ animationDelay: "70ms" }}>
           <p className={kicker(locale)}>{t.nav}</p>
-          <h1 className="font-display mt-4 text-[clamp(3.6rem,9vw,6.4rem)] leading-[0.88]">
+          <p className="mt-2 font-num text-xs text-[var(--muted)] sm:hidden">
+            {asOf} · T+1
+          </p>
+          <h1 className="font-display mt-3 break-words text-[clamp(2.85rem,13vw,6.4rem)] leading-[0.9] sm:mt-4 sm:leading-[0.88]">
             {formatMoney(snapshot.nav)}
           </h1>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          <div className="mt-5 flex flex-wrap items-center gap-2.5 sm:mt-6 sm:gap-3">
             <span
               className={`font-num rounded-full px-3 py-1 text-sm ${
                 tone === "down"
@@ -93,7 +96,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               {formatSignedMoney(snapshot.unrealizedPnl)}
             </span>
             <span
-              className={`font-num text-sm ${
+              className={`flex items-baseline gap-1.5 text-sm ${
                 tone === "down"
                   ? "text-[var(--down)]"
                   : tone === "up"
@@ -101,16 +104,15 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
                     : "text-[var(--muted)]"
               }`}
             >
-              {formatPct(vsCost)} {t.vsCost}
+              <span className="font-num">{formatPct(vsCost)}</span>
+              <span>{t.vsCost}</span>
             </span>
           </div>
-          <p className="mt-6 max-w-md text-[15px] leading-7 text-[var(--muted)]">
-            {t.dek(snapshot.holdings.length)}
-          </p>
+          <p className="dek mt-5 sm:mt-6">{t.dek(snapshot.holdings.length)}</p>
         </div>
 
         <div
-          className="rise flex flex-col items-center px-2 py-2"
+          className="rise flex flex-col items-center px-0 py-0 sm:px-2 sm:py-2"
           style={{ animationDelay: "140ms" }}
         >
           <AllocationRing
@@ -121,15 +123,16 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
             centerValue={String(snapshot.holdings.length)}
             centerLabel={t.names(snapshot.holdings.length)}
             ariaLabel={t.allocation}
+            locale={locale}
           />
-          <ul className="mt-5 w-full max-w-[280px] space-y-1">
+          <ul className="mt-4 flex w-full max-w-sm flex-wrap justify-center gap-1 sm:mt-5 sm:max-w-[280px] sm:flex-col sm:gap-0">
             {slices.map((slice, index) => {
               const selected = activeId === slice.id;
               return (
-                <li key={slice.id}>
+                <li key={slice.id} className="max-sm:shrink-0 sm:w-full">
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between rounded-xl px-2 py-2 text-left text-sm transition-colors"
+                    className="flex min-h-11 items-center justify-between rounded-full px-3 py-2 text-left text-sm transition-colors max-sm:w-auto sm:w-full sm:rounded-xl sm:px-2"
                     style={{ background: selected ? "rgba(255,255,255,0.08)" : "transparent" }}
                     onMouseEnter={() => setHoverId(slice.id)}
                     onMouseLeave={() => setHoverId(null)}
@@ -140,9 +143,13 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
                         className="size-2 rounded-full"
                         style={{ background: slice.color }}
                       />
-                      {slice.id === "CASH"
-                        ? t.cash
-                        : snapshot.holdings[index]?.symbol ?? slice.id}
+                      {slice.id === "CASH" ? (
+                        t.cash
+                      ) : (
+                        <span className="ticker">
+                          {snapshot.holdings[index]?.symbol ?? slice.id}
+                        </span>
+                      )}
                     </span>
                     <span className="font-num text-[var(--muted)]">
                       {formatWeight(
@@ -156,7 +163,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               );
             })}
           </ul>
-          <p className="mt-3 min-h-10 max-w-[280px] text-center text-xs leading-5 text-[var(--faint)]">
+          <p className="mt-2 min-h-0 max-w-[280px] text-center text-xs leading-5 text-[var(--faint)] sm:mt-3 sm:min-h-10">
             {activeHolding
               ? `${activeHolding.description} · ${t.shares(formatQty(activeHolding.quantity))} · ${formatMoney(activeHolding.markPrice)}`
               : "\u00a0"}
@@ -164,9 +171,9 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
         </div>
       </section>
 
-      <section className="rise mt-14" style={{ animationDelay: "180ms" }}>
-        <div className="glass overflow-hidden rounded-[22px]">
-          <div className="px-5 py-6">
+      <section className="rise mt-10 sm:mt-14" style={{ animationDelay: "180ms" }}>
+        <div className="glass overflow-hidden rounded-[16px] sm:rounded-[22px]">
+          <div className="px-4 py-5 sm:px-5 sm:py-6">
             <h2 className={kicker(locale)}>{t.costToMarket}</h2>
             <PnlBridge
               cost={costBasis}
@@ -175,9 +182,9 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               t={t}
             />
           </div>
-          <div className="flex items-baseline justify-between gap-4 border-t border-[var(--line)] px-5 pt-5 pb-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-[var(--line)] px-4 pt-4 pb-2 sm:px-5 sm:pt-5">
             <h2 className={kicker(locale)}>{t.positions}</h2>
-            <p className="font-num text-xs text-[var(--faint)]">
+            <p className="text-xs text-[var(--faint)]">
               {t.listed(snapshot.holdings.length, formatMoney(snapshot.cash))}
             </p>
           </div>
@@ -192,18 +199,16 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               t={t}
             />
           ))}
-          <div className="border-t border-[var(--line)] px-5 py-5">
+          <div className="border-t border-[var(--line)] px-4 py-4 sm:px-5 sm:py-5">
             <h2 className={kicker(locale)}>{t.activity}</h2>
             {snapshot.trades.length === 0 ? (
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                {t.noFills(asOf)}
-              </p>
+              <p className="dek mt-3 text-[var(--muted)]">{t.noFills(asOf)}</p>
             ) : (
               <div className="mt-3">
                 {snapshot.trades.map((trade, index) => (
                   <div
                     key={`${trade.symbol}-${trade.date}-${index}`}
-                    className="grid grid-cols-2 gap-3 border-b border-[var(--line)] py-3.5 text-sm last:border-0 sm:grid-cols-4"
+                    className="grid grid-cols-2 gap-2 border-b border-[var(--line)] py-3 text-sm last:border-0 sm:grid-cols-4 sm:gap-3 sm:py-3.5"
                   >
                     <span className="font-num text-[var(--muted)]">
                       {formatLongDate(trade.date, locale)}
@@ -215,7 +220,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
                           ? t.sell
                           : trade.side}
                     </span>
-                    <span>{trade.symbol}</span>
+                    <span className="ticker">{trade.symbol}</span>
                     <span className="font-num sm:text-right">
                       {formatQty(trade.quantity)} @ {formatMoney(trade.tradePrice)}
                     </span>
@@ -227,7 +232,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
         </div>
       </section>
 
-      <footer className="mt-16 max-w-3xl px-1 text-[11px] leading-6 text-[var(--faint)]">
+      <footer className="fine-print mt-10 max-w-3xl px-1 sm:mt-16">
         {t.footer(
           snapshot.generatedAt ? snapshot.generatedAt.replace("T", " ") : undefined,
         )}
@@ -249,7 +254,7 @@ function PnlBridge({
 }) {
   const max = Math.max(cost, nav, 1);
   return (
-    <div className="mt-4 grid gap-8 sm:grid-cols-2">
+    <div className="mt-3 grid gap-5 sm:mt-4 sm:grid-cols-2 sm:gap-8">
       <BridgeBar label={t.costBasis} value={cost} max={max} tone="flat" />
       <BridgeBar
         label={t.market}
@@ -283,11 +288,11 @@ function BridgeBar({
         : "rgba(255,255,255,0.72)";
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <span className="text-xs text-[var(--muted)]">{label}</span>
-        <span className="font-num text-sm">
-          {formatMoney(value)}
-          {delta ? <span className="ml-2 text-[var(--muted)]">{delta}</span> : null}
+        <span className="text-right text-sm">
+          <span className="font-num">{formatMoney(value)}</span>
+          {delta ? <span className="font-num ml-2 text-[var(--muted)]">{delta}</span> : null}
         </span>
       </div>
       <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
@@ -318,8 +323,10 @@ function HoldingRow({
   const vsCost = row.costBasis > 0 ? row.unrealizedPnl / row.costBasis : 0;
   return (
     <article
-      className={`relative cursor-pointer border-b border-[var(--line)] last:border-0 transition-colors ${
-        active ? "bg-[rgba(255,255,255,0.07)]" : "hover:bg-[rgba(255,255,255,0.04)]"
+      className={`relative min-h-14 cursor-pointer border-b border-[var(--line)] last:border-0 transition-colors ${
+        active
+          ? "bg-[rgba(255,255,255,0.07)]"
+          : "active:bg-[rgba(255,255,255,0.05)] sm:hover:bg-[rgba(255,255,255,0.04)]"
       }`}
       onMouseEnter={() => onHover(row.symbol)}
       onMouseLeave={() => onHover(null)}
@@ -329,14 +336,14 @@ function HoldingRow({
         className="pointer-events-none absolute inset-y-0 left-0 opacity-25"
         style={{ width: `${row.weight * 100}%`, background: color }}
       />
-      <div className="relative grid gap-4 px-5 py-5 sm:grid-cols-[1.15fr_0.85fr_0.7fr] sm:items-center">
-        <div>
-          <div className="flex items-baseline gap-3">
-            <span className="text-lg tracking-wide">{row.symbol}</span>
-            <span className="text-xs text-[var(--faint)]">{row.exchange}</span>
+      <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 px-4 py-4 sm:grid-cols-[1.15fr_0.85fr_0.7fr] sm:items-center sm:gap-4 sm:px-5 sm:py-5">
+        <div className="min-w-0">
+          <div className="flex items-baseline gap-2 sm:gap-3">
+            <span className="ticker text-base sm:text-lg">{row.symbol}</span>
+            <span className="text-[11px] text-[var(--faint)] sm:text-xs">{row.exchange}</span>
           </div>
-          <p className="mt-1 text-sm text-[var(--muted)]">{row.description}</p>
-          <p className="mt-2 font-num text-xs text-[var(--faint)]">
+          <p className="mt-1 truncate text-sm text-[var(--muted)]">{row.description}</p>
+          <p className="mt-2 hidden font-num text-xs text-[var(--faint)] sm:block">
             {t.shares(formatQty(row.quantity))} · {formatMoney(row.averageCost)} →{" "}
             {formatMoney(row.markPrice)}
           </p>
@@ -344,10 +351,10 @@ function HoldingRow({
         <div className="hidden sm:block">
           <PriceTrack cost={row.averageCost} mark={row.markPrice} t={t} />
         </div>
-        <div className="sm:text-right">
-          <div className="font-num text-base">{formatMoney(row.marketValue)}</div>
+        <div className="text-right">
+          <div className="font-num text-[15px] sm:text-base">{formatMoney(row.marketValue)}</div>
           <div
-            className={`mt-1 font-num text-sm ${
+            className={`mt-1 font-num text-xs sm:text-sm ${
               pnlTone(row.unrealizedPnl) === "down"
                 ? "text-[var(--down)]"
                 : pnlTone(row.unrealizedPnl) === "up"
@@ -361,6 +368,10 @@ function HoldingRow({
             {formatWeight(row.weight)}
           </div>
         </div>
+        <p className="col-span-2 font-num text-xs text-[var(--faint)] sm:hidden">
+          {t.shares(formatQty(row.quantity))} · {formatMoney(row.averageCost)} →{" "}
+          {formatMoney(row.markPrice)}
+        </p>
       </div>
     </article>
   );
@@ -375,6 +386,7 @@ function PriceTrack({
   mark: number;
   t: Copy;
 }) {
+  const { locale } = useLocale();
   const min = Math.min(cost, mark) * 0.9;
   const max = Math.max(cost, mark) * 1.05;
   const span = max - min || 1;
@@ -410,7 +422,7 @@ function PriceTrack({
           title={`${t.mark} ${formatMoney(mark)}`}
         />
       </div>
-      <div className="flex justify-between font-num text-[10px] text-[var(--faint)]">
+      <div className={`flex justify-between text-[var(--faint)] ${locale === "zh" ? "label-zh" : "label-en"}`}>
         <span>{t.cost}</span>
         <span>{t.mark}</span>
       </div>

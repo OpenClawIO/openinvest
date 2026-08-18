@@ -12,6 +12,25 @@
   --glass-strong: rgba(255, 255, 255, 0.14);
   --ring-track: rgba(255, 255, 255, 0.18);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-cjk: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei UI",
+    sans-serif;
+  --tracking-ui: -0.011em;
+  --tracking-display: -0.028em;
+  --tracking-brand: 0.2em;
+  --tracking-kicker: 0.14em;
+  --leading-body: 1.55;
+  --size-body: 15px;
+  --size-kicker: 11px;
+  --weight-kicker: 500;
+}
+
+html[data-locale="zh"] {
+  --tracking-ui: 0;
+  --tracking-display: -0.024em;
+  --tracking-kicker: 0.06em;
+  --leading-body: 1.75;
+  --size-body: 16px;
+  --size-kicker: 13px;
 }
 
 * {
@@ -21,14 +40,42 @@
 html,
 body {
   min-height: 100%;
+  min-height: 100dvh;
   background: transparent;
   color: var(--text);
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-sans), "PingFang SC", "Noto Sans SC", sans-serif;
-  letter-spacing: -0.014em;
+  font-family: var(--font-sans), var(--font-cjk);
+  font-weight: 400;
+  letter-spacing: var(--tracking-ui);
+  line-height: var(--leading-body);
+  font-synthesis: none;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page-shell {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(4.5rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+@media (min-width: 640px) {
+  .page-shell {
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+    padding-right: max(2rem, env(safe-area-inset-right));
+    padding-bottom: max(6rem, env(safe-area-inset-bottom));
+    padding-left: max(2rem, env(safe-area-inset-left));
+  }
 }
 
 body::before {
@@ -43,6 +90,16 @@ body::before {
     #1a1622;
 }
 
+@media (max-width: 639px) {
+  body::before {
+    background:
+      radial-gradient(640px 420px at 8% 0%, #ffc48a 0%, transparent 56%),
+      radial-gradient(520px 380px at 108% 22%, #8eb6ff 0%, transparent 52%),
+      radial-gradient(460px 340px at 72% 108%, #5aaa8c 0%, transparent 54%),
+      #1a1622;
+  }
+}
+
 .glass {
   background: var(--glass);
   border: 1px solid var(--line);
@@ -52,14 +109,52 @@ body::before {
 }
 
 .font-display {
-  font-family: var(--font-display), "Songti SC", serif;
+  font-family: var(--font-display), var(--font-sans), serif;
   font-weight: 400;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display);
+  font-optical-sizing: auto;
+}
+
+.font-display-zh {
+  font-family: var(--font-cjk);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
 }
 
 .font-num {
-  font-family: var(--font-num), ui-monospace, monospace;
+  font-family: var(--font-sans), var(--font-cjk);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: 0;
+}
+
+.brand-mark {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 500;
+  letter-spacing: var(--tracking-brand);
+  text-transform: uppercase;
+  font-feature-settings: "ss01" 1;
+}
+
+.ticker {
+  font-family: var(--font-sans), sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
+}
+
+.label-en {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.label-zh {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 button {
@@ -68,6 +163,7 @@ button {
   background: none;
   border: 0;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 :focus-visible {
@@ -81,17 +177,37 @@ button {
 }
 
 .kicker {
-  font-size: 11px;
-  letter-spacing: 0.2em;
+  font-size: var(--size-kicker);
+  font-weight: var(--weight-kicker);
+  letter-spacing: var(--tracking-kicker);
   text-transform: uppercase;
   color: var(--faint);
 }
 
 .kicker-zh {
-  font-size: 12px;
-  letter-spacing: 0.12em;
+  font-size: var(--size-kicker);
+  font-weight: 500;
+  letter-spacing: var(--tracking-kicker);
   text-transform: none;
   color: var(--faint);
+}
+
+.dek {
+  max-width: 28rem;
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+.fine-print {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--faint);
+}
+
+html[data-locale="zh"] .fine-print {
+  font-size: 12px;
+  line-height: 1.8;
 }
 
 @keyframes rise {

@@ -29,9 +29,12 @@ export function LanguageSwitch() {
           role="radio"
           aria-checked={locale === option.id}
           onClick={() => setLocale(option.id)}
-          className={`relative z-10 min-w-[4.75rem] px-3 py-1.5 text-xs transition-colors ${
+          className={`relative z-10 min-h-9 min-w-[3.4rem] px-2.5 py-1.5 text-[11px] transition-colors sm:min-h-0 sm:min-w-[4.75rem] sm:px-3 sm:text-xs ${
+            option.id === "en" ? "tracking-[-0.01em]" : "tracking-normal"
+          } ${
             locale === option.id ? "text-white" : "text-white/55 hover:text-white/80"
           }`}
+          lang={option.id === "zh" ? "zh-CN" : "en"}
         >
           {option.label}
         </button>
