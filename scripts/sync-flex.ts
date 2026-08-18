@@ -7,13 +7,16 @@ import { parseFlexXml } from "../src/lib/flex";
 
 const execFileAsync = promisify(execFile);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as {
+  version: string;
+};
+const USER_AGENT = `OpenInvest/${pkg.version} (Node.js)`;
 loadEnvLocal(join(root, ".env.local"));
 
 const SEND_URL =
   "https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService/SendRequest";
 const GET_URL =
   "https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService/GetStatement";
-const USER_AGENT = "OpenInvest/0.1 (Node.js)";
 
 async function main() {
   const token = required("IBKR_FLEX_TOKEN");

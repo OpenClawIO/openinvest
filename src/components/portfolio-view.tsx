@@ -14,6 +14,7 @@ import {
 } from "@/lib/format";
 import type { Copy, Locale } from "@/lib/i18n";
 import { CASH_COLOR, colorForIndex } from "@/lib/palette";
+import { APP_VERSION } from "@/lib/version";
 import type { PublicHolding, PublicSnapshot } from "@/lib/portfolio";
 import { useMemo, useState } from "react";
 
@@ -235,7 +236,8 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
       <footer className="fine-print mt-10 max-w-3xl px-1 sm:mt-16">
         {t.footer(
           snapshot.generatedAt ? snapshot.generatedAt.replace("T", " ") : undefined,
-        )}
+        )}{" "}
+        <span className="font-num">OpenInvest v{APP_VERSION}</span>
       </footer>
     </div>
   );
