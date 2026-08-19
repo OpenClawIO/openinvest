@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- GitHub Pages deploy and a weekday Flex sync Action. Secrets stay in GitHub Actions, not in the repo.
+
 ## [0.2.0] - 2026-08-18
 
 ### Added

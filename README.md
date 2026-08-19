@@ -67,6 +67,21 @@ Open [http://localhost:3000](http://localhost:3000). Expected after a successful
 
 Daily update: run `npm run sync` after the US cash close, then rebuild/deploy the static site. Do not log URLs that contain the Flex token.
 
+## GitHub Pages
+
+The site is a static export. GitHub Pages serves `out/`. Flex credentials never go in the repo.
+
+1. Push `main` to GitHub. The **Deploy GitHub Pages** workflow builds and publishes.
+2. In the repo: **Settings → Secrets and variables → Actions**, add:
+   - `IBKR_FLEX_TOKEN`
+   - `IBKR_FLEX_QUERY_ID`
+3. **Settings → Pages → Source** = GitHub Actions.
+4. Public URL: `https://<user>.github.io/openinvest/`
+
+The **Daily Flex sync** workflow runs 02:00 UTC Tuesday–Saturday (after the US close, with statement lag), commits only `data/public.json`, and redeploys. You can also run it from the Actions tab.
+
+Local `npm run dev` has no `basePath`. The Pages build sets `GITHUB_PAGES=1` so assets load under `/openinvest/`.
+
 ## Versioning
 
 `package.json` is the source of truth. User-Agent, README badge, and the site footer read that same number.
