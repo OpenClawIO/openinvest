@@ -16,7 +16,7 @@ const display = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "OpenInvest — Public book / 公开投资账户",
+  title: "OpenInvest — Public account / 公开投资账户",
   description:
     "A public Interactive Brokers snapshot. Updated after the US cash close. Not investment advice. 个人盈透账户日终快照，不构成投资建议。",
 };
@@ -25,7 +25,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#1a1622",
+  themeColor: "#eae7e1",
 };
 
 const localeBoot = `(function(){try{var q=new URLSearchParams(location.search).get("lang");var s=localStorage.getItem("openinvest.locale");var zh=q==="zh"||(q!=="en"&&(s==="zh"||(!s&&/^zh/i.test(navigator.language))));var r=document.documentElement;r.lang=zh?"zh-CN":"en";r.dataset.locale=zh?"zh":"en"}catch(e){}})()`;

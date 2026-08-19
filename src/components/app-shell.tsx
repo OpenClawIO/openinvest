@@ -14,8 +14,8 @@ function EmptyState() {
   const { locale, t } = useLocale();
   return (
     <main className="page-shell mx-auto max-w-xl">
-      <div className="glass flex items-center justify-between gap-3 rounded-[16px] px-4 py-3 sm:rounded-[22px] sm:px-5 sm:py-4">
-        <p className="brand-mark text-[11px] text-[var(--copper)]">{t.brand}</p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="brand-mark text-[11px] text-[var(--text)]">{t.brand}</p>
         <LanguageSwitch />
       </div>
       <h1

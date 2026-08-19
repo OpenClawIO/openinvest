@@ -33,3 +33,9 @@ npm-debug.log*
 
 # Flex raw dumps may include account numbers
 data/raw/
+
+# local browser traces
+.playwright-cli/
+
+# optional Blender meshes — the live stage is procedural Three.js
+/public/models/

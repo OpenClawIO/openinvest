@@ -7,9 +7,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-19
+
+This is the current public presentation. Allocation is structure, cost versus market is a ruler, names and prices stay in type.
+
 ### Added
 
 - GitHub Pages deploy and a weekday Flex sync Action. Secrets stay in GitHub Actions, not in the repo.
+- Light cyclorama stage: same-height volumes, width follows market weight. Drag to inspect, click to pin; the ledger stays in sync. `prefers-reduced-motion` uses equal-height bars with the same mapping.
+
+### Changed
+
+- Replaced the frosted-glass dashboard with a layered page: 3D for allocation, one ruler for cost versus market, type for identity, statement date for time.
 
 ## [0.2.0] - 2026-08-18
 

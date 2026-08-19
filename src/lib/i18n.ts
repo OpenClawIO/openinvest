@@ -3,12 +3,13 @@ export type Locale = "en" | "zh";
 export const copy = {
   en: {
     brand: "OPENINVEST",
-    tagline: "Public book",
+    tagline: "Public account",
     nav: "Net asset value",
     vsCost: "vs cost",
+    inspectHint: "Drag to inspect. Hover links a block to its row.",
+    delayedClose: "Delayed close",
     dek: (count: number) =>
       `One personal Interactive Brokers account, published as a delayed close snapshot. ${count === 1 ? "One name" : `${count} names`}. No live quotes.`,
-    names: (count: number) => (count === 1 ? "name" : "names"),
     cash: "Cash",
     shares: (qty: string) => `${qty} sh`,
     allocation: "Portfolio allocation",
@@ -33,9 +34,10 @@ export const copy = {
     tagline: "公开投资账户",
     nav: "净资产",
     vsCost: "相对成本",
+    inspectHint: "拖动检视。悬停对照列表。",
+    delayedClose: "延迟收盘",
     dek: (count: number) =>
       `个人盈透证券账户的日终快照。${count} 只标的。非实时行情。`,
-    names: (_count: number) => "标的",
     cash: "现金",
     shares: (qty: string) => `${qty} 股`,
     allocation: "资产配置",
