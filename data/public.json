@@ -1,10 +1,10 @@
 {
-  "asOf": "2026-08-18",
-  "generatedAt": "2026-08-19T22:52:02",
+  "asOf": "2026-08-19",
+  "generatedAt": "2026-08-20T21:53:16",
   "baseCurrency": "USD",
-  "nav": 2453.665171697,
+  "nav": 2978.065171697,
   "cash": 0.915171697,
-  "unrealizedPnl": -672.3543649999999,
+  "unrealizedPnl": -147.95436499999994,
   "holdings": [
     {
       "symbol": "TEM",
@@ -12,12 +12,12 @@
       "assetClass": "STK",
       "exchange": "NASDAQ",
       "quantity": 43,
-      "markPrice": 49.36,
+      "markPrice": 61.25,
       "averageCost": 63.696261441860464,
       "costBasis": 2738.939242,
-      "marketValue": 2122.48,
-      "unrealizedPnl": -616.4592419999999,
-      "weight": 0.8650243009856369,
+      "marketValue": 2633.75,
+      "unrealizedPnl": -105.18924199999992,
+      "weight": 0.8843829292356292,
       "currency": "USD"
     },
     {
@@ -26,12 +26,12 @@
       "assetClass": "STK",
       "exchange": "NASDAQ",
       "quantity": 101,
-      "markPrice": 3.27,
+      "markPrice": 3.4,
       "averageCost": 3.8234170594059407,
       "costBasis": 386.165123,
-      "marketValue": 330.27,
-      "unrealizedPnl": -55.89512300000001,
-      "weight": 0.1346027175222034,
+      "marketValue": 343.4,
+      "unrealizedPnl": -42.76512300000002,
+      "weight": 0.11530976664433415,
       "currency": "USD"
     }
   ],
