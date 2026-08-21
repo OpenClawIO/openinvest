@@ -25,7 +25,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#eae7e1",
+  themeColor: "#000814",
 };
 
 const localeBoot = `(function(){try{var q=new URLSearchParams(location.search).get("lang");var s=localStorage.getItem("openinvest.locale");var zh=q==="zh"||(q!=="en"&&(s==="zh"||(!s&&/^zh/i.test(navigator.language))));var r=document.documentElement;r.lang=zh?"zh-CN":"en";r.dataset.locale=zh?"zh":"en"}catch(e){}})()`;

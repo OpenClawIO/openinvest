@@ -12,7 +12,7 @@ const HEIGHT = 0.56;
 const DEPTH = 0.72;
 const SPAN = 2.55;
 const GAP = 0.045;
-const STUDIO = "#eae7e1";
+const STUDIO = "#000814";
 
 type BlockProps = {
   volume: StudioVolume;
@@ -51,7 +51,7 @@ function Block({ volume, width, position, active, dimmed, onHover, onSelect }: B
       );
       material.current.emissiveIntensity = THREE.MathUtils.damp(
         material.current.emissiveIntensity,
-        active ? 0.05 : 0,
+        active ? 0.08 : 0,
         8,
         delta,
       );
@@ -84,8 +84,8 @@ function Block({ volume, width, position, active, dimmed, onHover, onSelect }: B
           ref={material}
           color={volume.color}
           roughness={0.4}
-          metalness={0.16}
-          clearcoat={0.22}
+          metalness={0.22}
+          clearcoat={0.35}
           clearcoatRoughness={0.38}
           emissive={volume.color}
           emissiveIntensity={0}
@@ -142,18 +142,18 @@ function StillLife({
 function Lights() {
   return (
     <>
-      <hemisphereLight args={["#f7f5f1", "#c9c4bb", 0.78]} />
-      <ambientLight intensity={0.38} color="#f4f1ec" />
+      <hemisphereLight args={["#4a5d7a", "#070b12", 0.7]} />
+      <ambientLight intensity={0.28} color="#1a2740" />
       <directionalLight
         position={[2.2, 3.8, 2.6]}
-        intensity={1.95}
-        color="#fffaf3"
+        intensity={1.55}
+        color="#e8f0ff"
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.00015}
       />
-      <directionalLight position={[-2.8, 1.4, 1.4]} intensity={0.38} color="#d7dde6" />
-      <directionalLight position={[0.2, 2.2, -2.4]} intensity={0.22} color="#efebe4" />
+      <directionalLight position={[-2.8, 1.4, 1.4]} intensity={0.55} color="#1c6cff" />
+      <directionalLight position={[0.2, 2.2, -2.4]} intensity={0.28} color="#3d4f6e" />
     </>
   );
 }
@@ -185,7 +185,7 @@ function StudioScene({
         <planeGeometry args={[24, 24]} />
         <meshStandardMaterial color={STUDIO} roughness={1} metalness={0} />
       </mesh>
-      <ContactShadows position={[0, 0.001, 0]} opacity={0.2} scale={8} blur={2.6} far={3.2} />
+      <ContactShadows position={[0, 0.001, 0]} opacity={0.55} scale={8} blur={2.4} far={3.2} />
       <OrbitControls
         makeDefault
         target={LOOK_AT}
@@ -223,7 +223,7 @@ export function StudioStage({
       onCreated={({ camera, gl }) => {
         camera.lookAt(...LOOK_AT);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.06;
+        gl.toneMappingExposure = 1.18;
         gl.shadowMap.type = THREE.PCFShadowMap;
       }}
       onPointerMissed={() => onHover(null)}

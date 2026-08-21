@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #eae7e1;
-  --text: #1c1b19;
-  --muted: rgba(28, 27, 25, 0.62);
-  --faint: rgba(28, 27, 25, 0.4);
-  --copper: #5c5348;
-  --up: #2f6d4f;
-  --down: #b54a3d;
-  --line: rgba(28, 27, 25, 0.12);
-  --ring-track: rgba(28, 27, 25, 0.12);
+  --bg: #000814;
+  --surface: #001533;
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: #8b97ad;
+  --faint: #5e7394;
+  --copper: #8b97ad;
+  --up: #00cc4b;
+  --down: #ff4433;
+  --line: rgba(255, 255, 255, 0.1);
+  --ring-track: rgba(255, 255, 255, 0.12);
+  --chip: rgba(255, 68, 51, 0.14);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --font-cjk: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei UI",
     sans-serif;
@@ -146,8 +148,8 @@ body {
 }
 
 .measure-ruler {
-  margin-top: 1.15rem;
-  max-width: 36rem;
+  margin-top: 1.5rem;
+  max-width: none;
 }
 
 .measure-track {
@@ -157,12 +159,17 @@ body {
 }
 
 .measure-track-line {
-  height: 3.25rem;
-  margin-top: 0.15rem;
+  height: 3.5rem;
+  margin-top: 0.4rem;
+}
+
+.measure-track-compact {
+  height: 2.25rem;
+  margin-top: 0;
 }
 
 .measure-span-line {
-  height: 3px;
+  height: 5px;
 }
 
 .measure-line {
@@ -197,9 +204,45 @@ body {
 }
 
 .measure-dot-mark {
-  width: 11px;
-  height: 11px;
-  box-shadow: 0 0 0 3px rgba(234, 231, 225, 0.88);
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.measure-float {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 14px;
+  background: var(--chip);
+}
+
+.status-chip.is-up {
+  background: rgba(0, 204, 75, 0.14);
+}
+
+.status-chip.is-flat {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.font-money {
+  font-family: var(--font-sans), var(--font-cjk);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 .studio-canvas,
@@ -235,8 +278,8 @@ body {
 }
 
 .studio-summary {
-  padding-top: 0.5rem;
-  padding-bottom: 1.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
 }
 
 .studio-key {
@@ -278,7 +321,7 @@ body {
   }
 
   .studio-summary {
-    padding-bottom: 2.25rem;
+    padding-bottom: 0.75rem;
   }
 
   .studio-key {
@@ -299,7 +342,10 @@ body {
 }
 
 .holding-row.is-active {
-  background: transparent;
+  background: var(--surface);
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-radius: 14px;
 }
 
 .holding-row.is-active .ticker {
@@ -413,13 +459,13 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid rgba(28, 27, 25, 0.72);
+  outline: 2px solid rgba(255, 255, 255, 0.72);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: var(--text);
-  color: var(--bg);
+  background: rgba(255, 255, 255, 0.92);
+  color: #000814;
 }
 
 .kicker {

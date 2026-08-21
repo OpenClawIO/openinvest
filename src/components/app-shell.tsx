@@ -11,20 +11,14 @@ export function AppShell({ snapshot }: { snapshot: PublicSnapshot | null }) {
 }
 
 function EmptyState() {
-  const { locale, t } = useLocale();
+  const { t } = useLocale();
   return (
     <main className="page-shell mx-auto max-w-xl">
       <div className="flex items-center justify-between gap-3">
         <p className="brand-mark text-[11px] text-[var(--text)]">{t.brand}</p>
         <LanguageSwitch />
       </div>
-      <h1
-        className={`mt-8 sm:mt-10 ${
-          locale === "zh"
-            ? "font-display-zh text-[clamp(2.2rem,8vw,3rem)]"
-            : "font-display text-[clamp(2.4rem,10vw,3.5rem)] sm:text-5xl"
-        }`}
-      >
+      <h1 className="font-money mt-8 text-[clamp(2.2rem,8vw,3.25rem)] leading-[0.95] sm:mt-10">
         {t.emptyTitle}
       </h1>
       <p className="dek mt-4">{t.emptyBody}</p>

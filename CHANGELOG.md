@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Tightened the page toward Copilot-style money hierarchy: net asset value and a single under/over-cost line first, allocation as the inspectable chart, cost versus market as a follow-the-line measure, holdings as left-name / right-amount rows.
+- Rebuilt the page in Copilot’s money language: near-black navy canvas, monumental NAV, a green/red under-cost chip, and the cost-to-market line sitting on the number. Allocation volumes stay, but they now read as bright data on a dark stage.
 
 ## [0.3.0] - 2026-08-19
 

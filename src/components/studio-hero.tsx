@@ -2,6 +2,7 @@
 
 import { StructureBars } from "@/components/structure-bars";
 import { StructureKey } from "@/components/structure-key";
+import { ValueRuler } from "@/components/measure-ruler";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import {
   formatLongDate,
@@ -60,23 +61,26 @@ export function StudioHero({
     <section>
       <div className="studio-caption studio-summary">
         <p className={kicker(locale)}>{t.nav}</p>
-        <h1 className="font-display mt-3 break-words text-[clamp(2.8rem,10vw,5.25rem)] leading-[0.9]">
+        <h1 className="font-money mt-3 break-words text-[clamp(3rem,11vw,5.75rem)] leading-[0.88]">
           {formatMoney(snapshot.nav)}
         </h1>
         <p
-          className={`mt-4 text-[15px] sm:text-base ${
-            tone === "down"
-              ? "text-[var(--down)]"
-              : tone === "up"
-                ? "text-[var(--up)]"
-                : "text-[var(--muted)]"
+          className={`status-chip ${
+            tone === "up" ? "is-up text-[var(--up)]" : tone === "down" ? "text-[var(--down)]" : "is-flat"
           }`}
         >
           <span className="font-num">{formatSignedMoney(snapshot.unrealizedPnl)}</span>
-          <span className="mx-2 text-[var(--faint)]">·</span>
+          <span className="text-[var(--faint)]">·</span>
           <span className="font-num">{formatPct(vsCost)}</span>
-          <span className="ml-1.5 text-[var(--muted)]">{statusCopy(snapshot.unrealizedPnl, t)}</span>
+          <span>{statusCopy(snapshot.unrealizedPnl, t)}</span>
         </p>
+        <ValueRuler
+          cost={costBasis}
+          market={snapshot.nav}
+          pnl={snapshot.unrealizedPnl}
+          locale={locale}
+          t={t}
+        />
       </div>
 
       <div className="studio-frame">

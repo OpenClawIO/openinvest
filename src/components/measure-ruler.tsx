@@ -1,6 +1,6 @@
 "use client";
 
-import { formatMoney, pnlTone } from "@/lib/format";
+import { formatMoney, formatSignedMoney, pnlTone } from "@/lib/format";
 import type { Copy, Locale } from "@/lib/i18n";
 
 function toneColor(value: number) {
@@ -51,6 +51,12 @@ export function ValueRuler({
           className="measure-dot measure-dot-mark"
           style={{ left: `${marketLeft}%`, background: toneColor(pnl) }}
         />
+        <span
+          className="measure-float font-num"
+          style={{ left: `${marketLeft}%`, color: toneColor(pnl) }}
+        >
+          {formatSignedMoney(pnl)}
+        </span>
       </div>
       <div className="mt-1 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { LanguageSwitch } from "@/components/language-switch";
-import { PriceRuler, ValueRuler } from "@/components/measure-ruler";
+import { PriceRuler } from "@/components/measure-ruler";
 import { StudioHero } from "@/components/studio-hero";
 import { useLocale } from "@/components/locale-provider";
 import {
@@ -29,7 +29,6 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const activeId = hoverId ?? pinnedId;
 
-  const costBasis = snapshot.holdings.reduce((sum, row) => sum + row.costBasis, 0);
   const asOf = formatLongDate(snapshot.asOf, locale);
 
   const select = (id: string) => {
@@ -74,17 +73,6 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
 
       <main className="ledger">
         <p className="dek">{t.dek(snapshot.holdings.length)}</p>
-
-        <section className="mt-12 sm:mt-16">
-          <h2 className={kicker(locale)}>{t.costToMarket}</h2>
-          <ValueRuler
-            cost={costBasis}
-            market={snapshot.nav}
-            pnl={snapshot.unrealizedPnl}
-            locale={locale}
-            t={t}
-          />
-        </section>
 
         <section className="mt-12 sm:mt-16">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -194,7 +182,7 @@ function HoldingRow({
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <p className="font-num text-[15px] sm:text-base">{formatMoney(row.marketValue)}</p>
+          <p className="font-num text-lg sm:text-xl">{formatMoney(row.marketValue)}</p>
           <p
             className={`mt-0.5 font-num text-sm ${
               tone === "down"
