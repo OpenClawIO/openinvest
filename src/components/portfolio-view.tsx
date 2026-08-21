@@ -14,6 +14,7 @@ import {
 } from "@/lib/format";
 import { currencyForLocale, toDisplayAmount, type DisplayCurrency } from "@/lib/fx";
 import type { Copy, Locale } from "@/lib/i18n";
+import { colorForIndex } from "@/lib/palette";
 import { APP_VERSION } from "@/lib/version";
 import type { PublicHolding, PublicSnapshot } from "@/lib/portfolio";
 import { useState } from "react";
@@ -85,7 +86,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
             </p>
           </div>
           <div className="mt-2">
-            {snapshot.holdings.map((row) => (
+            {snapshot.holdings.map((row, index) => (
               <HoldingRow
                 key={row.symbol}
                 row={row}
@@ -93,6 +94,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
                 total={toDisplayAmount(snapshot.nav, currency, snapshot.fx)}
                 pnl={toDisplayAmount(row.unrealizedPnl, currency, snapshot.fx)}
                 currency={currency}
+                color={colorForIndex(index)}
                 active={activeId === row.symbol}
                 onHover={setHoverId}
                 onSelect={select}
@@ -147,6 +149,7 @@ function HoldingRow({
   total,
   pnl,
   currency,
+  color,
   active,
   onHover,
   onSelect,
@@ -157,6 +160,7 @@ function HoldingRow({
   total: number;
   pnl: number;
   currency: DisplayCurrency;
+  color: string;
   active: boolean;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
@@ -217,7 +221,7 @@ function HoldingRow({
         <span
           style={{
             width: `${Math.max(total > 0 ? (amount / total) * 100 : row.weight * 100, 1.5)}%`,
-            background: currency === "CNY" ? "#8d1f2f" : "#1c5c3c",
+            background: color,
           }}
         />
       </div>

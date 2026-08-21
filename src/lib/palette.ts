@@ -1,3 +1,5 @@
-export const GOLD = "#e4c36a";
-export const GOLD_DEEP = "#8f6a1f";
-export const CASH_COLOR = "#4a5a73";
+export const SLICE_COLORS = ["#6ea8ff", "#3ee0b0", "#e4c36a", "#c08a6a"] as const;
+
+export function colorForIndex(index: number) {
+  return SLICE_COLORS[((index % SLICE_COLORS.length) + SLICE_COLORS.length) % SLICE_COLORS.length];
+}

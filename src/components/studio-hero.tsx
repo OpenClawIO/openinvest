@@ -1,9 +1,10 @@
 "use client";
 
-import { StructureBars } from "@/components/structure-bars";
+import { AllocationPie } from "@/components/allocation-pie";
+import { NavLine } from "@/components/nav-line";
 import { StructureKey } from "@/components/structure-key";
-import { ValueRuler } from "@/components/measure-ruler";
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { allocationValues, slicesFromSnapshot } from "@/lib/chart-model";
+import { seriesForChart } from "@/lib/equity";
 import {
   formatLongDate,
   formatMoney,
@@ -13,17 +14,10 @@ import {
   formatWeight,
   pnlTone,
 } from "@/lib/format";
-import { toDisplayAmount } from "@/lib/fx";
+import { currencyForLocale, toDisplayAmount } from "@/lib/fx";
 import type { Copy, Locale } from "@/lib/i18n";
 import type { PublicSnapshot } from "@/lib/portfolio";
-import { stacksFromSnapshot } from "@/lib/studio";
-import dynamic from "next/dynamic";
-import { Suspense, useMemo } from "react";
-
-const StudioCanvas = dynamic(
-  () => import("@/components/studio-stage").then((mod) => mod.StudioStage),
-  { ssr: false, loading: () => <div className="studio-stage-slot" /> },
-);
+import { useCallback, useMemo } from "react";
 
 function kicker(locale: Locale) {
   return locale === "zh" ? "kicker-zh" : "kicker";
@@ -50,22 +44,24 @@ export function StudioHero({
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
 }) {
-  const reduced = usePrefersReducedMotion();
-  const { currency, stacks } = useMemo(
-    () => stacksFromSnapshot(snapshot, locale),
-    [locale, snapshot],
-  );
   const asOf = formatLongDate(snapshot.asOf, locale);
+  const currency = currencyForLocale(locale);
+  const amount = useCallback(
+    (usd: number) => toDisplayAmount(usd, currency, snapshot.fx),
+    [currency, snapshot.fx],
+  );
+  const slices = useMemo(
+    () => slicesFromSnapshot(snapshot, allocationValues(snapshot, amount)),
+    [amount, snapshot],
+  );
+  const series = useMemo(() => seriesForChart(snapshot), [snapshot]);
   const activeHolding = snapshot.holdings.find((row) => row.symbol === activeId);
   const costBasis = snapshot.holdings.reduce((sum, row) => sum + row.costBasis, 0);
   const vsCost = costBasis > 0 ? snapshot.unrealizedPnl / costBasis : 0;
   const tone = pnlTone(snapshot.unrealizedPnl);
-  const displayNav = toDisplayAmount(snapshot.nav, currency, snapshot.fx);
-  const displayCost = toDisplayAmount(costBasis, currency, snapshot.fx);
-  const displayPnl = toDisplayAmount(snapshot.unrealizedPnl, currency, snapshot.fx);
-  const activeAmount = activeHolding
-    ? toDisplayAmount(activeHolding.marketValue, currency, snapshot.fx)
-    : 0;
+  const displayNav = amount(snapshot.nav);
+  const displayPnl = amount(snapshot.unrealizedPnl);
+  const activeAmount = activeHolding ? amount(activeHolding.marketValue) : 0;
   const rate = snapshot.fx?.usdCny;
 
   return (
@@ -88,44 +84,38 @@ export function StudioHero({
           <span className="font-num">{formatPct(vsCost)}</span>
           <span>{statusCopy(snapshot.unrealizedPnl, t)}</span>
         </p>
-        <ValueRuler
-          cost={displayCost}
-          market={displayNav}
-          pnl={displayPnl}
-          currency={currency}
-          locale={locale}
-          t={t}
-        />
       </div>
 
-      <div className="studio-frame">
-        <Suspense fallback={<div className="studio-stage-slot" />}>
-          {reduced ? (
-            <StructureBars
-              stacks={stacks}
-              currency={currency}
-              activeId={activeId}
-              onHover={onHover}
-              onSelect={onSelect}
-              ariaLabel={t.allocation}
-            />
-          ) : (
-            <StudioCanvas
-              key={currency}
-              stacks={stacks}
-              currency={currency}
-              activeId={activeId}
-              onHover={onHover}
-              onSelect={onSelect}
-            />
-          )}
-        </Suspense>
-        <p className="studio-plate">
-          {asOf}
-          <span className="mx-2 text-[var(--faint)]">·</span>
-          {t.delayedClose}
-        </p>
+      <div className="chart-board">
+        <figure className="chart-panel">
+          <p className={kicker(locale)}>{t.allocation}</p>
+          <AllocationPie
+            slices={slices}
+            activeId={activeId}
+            idleLabel={t.allocation}
+            onHover={onHover}
+            onSelect={onSelect}
+            ariaLabel={t.allocation}
+          />
+        </figure>
+        <figure className="chart-panel">
+          <p className={kicker(locale)}>{t.navLine}</p>
+          <NavLine
+            series={series}
+            amount={amount}
+            currency={currency}
+            locale={locale}
+            navLabel={t.market}
+            costLabel={t.costBasis}
+            ariaLabel={t.navLine}
+          />
+        </figure>
       </div>
+      <p className="chart-plate">
+        {asOf}
+        <span className="mx-2 text-[var(--faint)]">·</span>
+        {t.delayedClose}
+      </p>
 
       <div className="studio-caption studio-key">
         <p className="mb-5 min-h-6 max-w-xl text-sm leading-6 text-[var(--muted)]">
@@ -134,7 +124,7 @@ export function StudioHero({
             : t.inspectHint}
         </p>
         <StructureKey
-          stacks={stacks}
+          slices={slices}
           currency={currency}
           activeId={activeId}
           onHover={onHover}

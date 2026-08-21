@@ -1,17 +1,17 @@
 "use client";
 
-import { formatMoney } from "@/lib/format";
+import type { Slice } from "@/lib/chart-model";
+import { formatMoney, formatWeight } from "@/lib/format";
 import type { DisplayCurrency } from "@/lib/fx";
-import type { CashStack } from "@/lib/studio";
 
 export function StructureKey({
-  stacks,
+  slices,
   currency,
   activeId,
   onHover,
   onSelect,
 }: {
-  stacks: CashStack[];
+  slices: Slice[];
   currency: DisplayCurrency;
   activeId: string | null;
   onHover: (id: string | null) => void;
@@ -19,26 +19,24 @@ export function StructureKey({
 }) {
   return (
     <div className="structure-key">
-      {stacks.map((stack) => {
-        const active = activeId === stack.id;
+      {slices.map((slice) => {
+        const active = activeId === slice.id;
         return (
           <button
-            key={stack.id}
+            key={slice.id}
             type="button"
             aria-pressed={active}
             className={`structure-key-item ${active ? "is-active" : ""}`}
-            onMouseEnter={() => onHover(stack.id)}
+            onMouseEnter={() => onHover(slice.id)}
             onMouseLeave={() => onHover(null)}
-            onFocus={() => onHover(stack.id)}
+            onFocus={() => onHover(slice.id)}
             onBlur={() => onHover(null)}
-            onClick={() => onSelect(stack.id)}
+            onClick={() => onSelect(slice.id)}
           >
-            <span
-              className="holding-swatch"
-              style={{ background: currency === "CNY" ? "#8d1f2f" : "#1c5c3c" }}
-            />
-            <span className="ticker">{stack.label}</span>
-            <span className="font-num text-[var(--muted)]">{formatMoney(stack.amount, 0, currency)}</span>
+            <span className="holding-swatch" style={{ background: slice.color }} />
+            <span className="ticker">{slice.label}</span>
+            <span className="font-num text-[var(--muted)]">{formatWeight(slice.weight)}</span>
+            <span className="font-num text-[var(--faint)]">{formatMoney(slice.value, 0, currency)}</span>
           </button>
         );
       })}

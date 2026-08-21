@@ -25,6 +25,12 @@ export type PublicTrade = {
   currency: string;
 };
 
+export type EquityPoint = {
+  asOf: string;
+  nav: number;
+  costBasis: number;
+};
+
 export type PublicSnapshot = {
   asOf: string;
   generatedAt: string;
@@ -35,4 +41,5 @@ export type PublicSnapshot = {
   holdings: PublicHolding[];
   trades: PublicTrade[];
   fx?: FxQuote;
+  series?: EquityPoint[];
 };

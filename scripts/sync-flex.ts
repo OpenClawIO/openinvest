@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { parseFlexXml } from "../src/lib/flex";
 import { withFxQuote } from "./with-fx";
+import { withSeries } from "./with-series";
 
 const execFileAsync = promisify(execFile);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -30,7 +31,7 @@ async function main() {
 
   const reference = await sendRequest(token, queryId);
   const xml = await getStatement(token, reference);
-  const snapshot = await withFxQuote(parseFlexXml(xml));
+  const snapshot = withSeries(await withFxQuote(parseFlexXml(xml)), join(root, "data", "public.json"));
 
   const rawDir = join(root, "data", "raw");
   mkdirSync(rawDir, { recursive: true });

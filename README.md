@@ -12,19 +12,19 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page counts the book in **cash on the table**. English uses modeled US dollar notes. 中文 uses modeled 人民币 notes at the baked USD/CNY rate.
+The public page is a **pie and a line**. The pie is market weight. The line is statement NAV against cost. English amounts are dollars. 中文 amounts are yuan at the baked USD/CNY rate.
 
-当前公开页用桌上的现金计数。英文是美元纸币，中文是人民币纸币，汇率写入快照。
+当前公开页是饼图加折线。饼图是仓位权重，折线是报表净资产相对成本。英文为美元，中文为人民币。
 
 | Layer | What it shows |
 | --- | --- |
-| Structure | Stylized $1–$100 notes in English, ¥1–¥100 notes in 中文. Straps of 10 or 100 keep the pile readable. |
-| Relationship | Cost and market on one ruler from zero. The segment between marks is P/L. |
-| Identity | Symbol, shares, cost, mark, and amount in HTML. Hover or click a pile to highlight its row. |
-| Time | Statement date on the stage. USD/CNY is the quote at page build, not a live tick. |
+| Structure | Donut of holdings by market value. Hover or click a slice to pin its row. |
+| Relationship | Statement NAV as a line, cost as a dashed path. The band between them is P/L. |
+| Identity | Symbol, shares, cost, mark, and amount in HTML. |
+| Time | Statement dates on the line. No invented ticks. USD/CNY is the quote at page build. |
 | Language | `English` / `中文` on the same page. English amounts are dollars; 中文 amounts are yuan. |
 
-净资产数字是静态的。英文为 `formatMoney(..., "USD")`，中文为人民币。系统开启减少动态时，改为二维纸币面。
+净资产数字是静态的。英文为 `formatMoney(..., "USD")`，中文为人民币。系统开启减少动态时，图表仍是同一几何，只去掉过渡。
 
 ## What is public / 公开范围
 
@@ -32,6 +32,7 @@ Published in `data/public.json` and on the site:
 
 - Net asset value, cash, unrealized P/L
 - Each holding: symbol, shares, average cost, mark, market value, weight
+- Statement NAV series (`asOf`, NAV, cost basis) as the book grows
 - USD/CNY at page build (used by the Chinese page)
 - Fills for the Flex query window (usually last business day)
 
@@ -49,7 +50,7 @@ Never published (keep out of git and the frontend):
 - Next.js static export (`output: "export"`)
 - Flex Web Service v3 → `data/public.json`
 - Same-page locale: `?lang=en` | `?lang=zh`
-- Three.js studio of stylized USD and RMB notes. CI does not need Blender.
+- SVG pie (weight) and line (statement NAV vs cost)
 
 ## Setup
 

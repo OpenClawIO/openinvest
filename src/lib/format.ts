@@ -50,6 +50,16 @@ export function formatGrams(value: number) {
   }).format(value)} g`;
 }
 
+export function formatAxisDate(isoDate: string, locale: "en" | "zh" = "en") {
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 export function formatLongDate(isoDate: string, locale: "en" | "zh" = "en") {
   const date = new Date(`${isoDate}T00:00:00Z`);
   if (Number.isNaN(date.getTime())) return isoDate;
