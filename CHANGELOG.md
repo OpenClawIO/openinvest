@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Rebuilt the page around 1 g gold coins: lathed rounds with a rim and reeded edge, one coin per gram at the baked XAU/USD spot, stacks instead of boxes, NAV still static dollars with gold mass underneath.
+- Coins are now 1, 2, 5, and 10 g rounds with the gram mark on the face. Change is greedy from gold mass; dollars stay the static NAV.
 
 ## [0.3.0] - 2026-08-19
 

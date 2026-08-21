@@ -20,7 +20,6 @@ export function StructureBars({
       {stacks.map((stack) => {
         const active = activeId === stack.id;
         const dimmed = activeId != null && !active;
-        const discs = stack.coins + (stack.remainder > 0.05 ? 1 : 0);
         return (
           <button
             key={stack.id}
@@ -34,16 +33,17 @@ export function StructureBars({
             onBlur={() => onHover(null)}
             onClick={() => onSelect(stack.id)}
           >
-            {Array.from({ length: Math.max(discs, 1) }, (_, index) => {
-              const partial = index === stack.coins;
-              return (
-                <span
-                  key={index}
-                  className={`coin-disc ${partial ? "is-partial" : ""}`}
-                  style={partial ? { transform: `scaleY(${Math.max(stack.remainder, 0.18)})` } : undefined}
-                />
-              );
-            })}
+            {stack.pieces.map((piece, index) => (
+              <span
+                key={`${piece.denom}-${index}`}
+                className="coin-face"
+                data-denom={piece.denom}
+                style={{ opacity: piece.fill < 1 ? 0.72 : 1 }}
+              >
+                <span className="coin-face-num">{piece.denom}</span>
+                <span className="coin-face-unit">g</span>
+              </span>
+            ))}
           </button>
         );
       })}

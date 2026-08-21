@@ -12,19 +12,19 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page counts the book in **1 g gold coins**. Each coin is one gram at the XAU/USD spot baked into the snapshot. Names stay in type.
+The public page counts the book in **1, 2, 5, and 10 g gold coins**. Gram weight is stamped on the face. Names stay in type.
 
-当前公开页用 **1 克金币** 计数。一枚金币是一克，按写入快照的黄金现价。名称只出现在文字里。
+当前公开页用 **1、2、5、10 克金币** 计数。克数打在币面上。名称只出现在文字里。
 
 | Layer | What it shows |
 | --- | --- |
-| Structure | Stacks of modeled 1 g rounds. Coin count = market value / gold USD per gram. No ticker text in WebGL. |
+| Structure | 1 / 2 / 5 / 10 g rounds, sized by mass, greedy change from market value / gold spot. Gram mark is on the face. |
 | Relationship | Cost and market on one ruler from zero. The segment between marks is P/L. |
 | Identity | Symbol, shares, cost, mark, and grams in HTML. Hover or click a stack to highlight its row. |
 | Time | Statement date on the stage. Gold spot is the quote at page build, not a live tick. |
 | Language | `English` / `中文` on the same page. Numbers and layout stay put. |
 
-净资产数字是静态的 `formatMoney(snapshot.nav)`，不会从 $0 往上跳。系统开启减少动态时，金币堆改为二维金片，克重映射与 3D 相同。
+净资产数字是静态的 `formatMoney(snapshot.nav)`，不会从 $0 往上跳。系统开启减少动态时，改为二维金币面，面额映射与 3D 相同。
 
 ## What is public / 公开范围
 
