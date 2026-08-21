@@ -5,7 +5,6 @@ import { PriceRuler } from "@/components/measure-ruler";
 import { StudioHero } from "@/components/studio-hero";
 import { useLocale } from "@/components/locale-provider";
 import {
-  formatGrams,
   formatLongDate,
   formatMoney,
   formatPct,
@@ -13,9 +12,8 @@ import {
   formatSignedMoney,
   pnlTone,
 } from "@/lib/format";
-import { gramsFromUsd } from "@/lib/gold";
+import { currencyForLocale, toDisplayAmount, type DisplayCurrency } from "@/lib/fx";
 import type { Copy, Locale } from "@/lib/i18n";
-import { GOLD } from "@/lib/palette";
 import { APP_VERSION } from "@/lib/version";
 import type { PublicHolding, PublicSnapshot } from "@/lib/portfolio";
 import { useState } from "react";
@@ -31,6 +29,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
   const activeId = hoverId ?? pinnedId;
 
   const asOf = formatLongDate(snapshot.asOf, locale);
+  const currency = currencyForLocale(locale);
 
   const select = (id: string) => {
     setPinnedId((current) => {
@@ -79,7 +78,10 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2 className={kicker(locale)}>{t.positions}</h2>
             <p className="text-xs text-[var(--faint)]">
-              {t.listed(snapshot.holdings.length, formatMoney(snapshot.cash))}
+              {t.listed(
+                snapshot.holdings.length,
+                formatMoney(toDisplayAmount(snapshot.cash, currency, snapshot.fx), 2, currency),
+              )}
             </p>
           </div>
           <div className="mt-2">
@@ -87,8 +89,10 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               <HoldingRow
                 key={row.symbol}
                 row={row}
-                grams={gramsFromUsd(row.marketValue, snapshot.gold?.usdPerGram ?? 0)}
-                totalGrams={gramsFromUsd(snapshot.nav, snapshot.gold?.usdPerGram ?? 0)}
+                amount={toDisplayAmount(row.marketValue, currency, snapshot.fx)}
+                total={toDisplayAmount(snapshot.nav, currency, snapshot.fx)}
+                pnl={toDisplayAmount(row.unrealizedPnl, currency, snapshot.fx)}
+                currency={currency}
                 active={activeId === row.symbol}
                 onHover={setHoverId}
                 onSelect={select}
@@ -118,7 +122,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
                     </p>
                   </div>
                   <p className="font-num shrink-0 text-[15px]">
-                    {formatQty(trade.quantity)} @ {formatMoney(trade.tradePrice)}
+                    {formatQty(trade.quantity)} @ {formatMoney(trade.tradePrice, 2, "USD")}
                   </p>
                 </div>
               ))}
@@ -139,16 +143,20 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
 
 function HoldingRow({
   row,
-  grams,
-  totalGrams,
+  amount,
+  total,
+  pnl,
+  currency,
   active,
   onHover,
   onSelect,
   t,
 }: {
   row: PublicHolding;
-  grams: number;
-  totalGrams: number;
+  amount: number;
+  total: number;
+  pnl: number;
+  currency: DisplayCurrency;
   active: boolean;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
@@ -186,8 +194,7 @@ function HoldingRow({
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <p className="font-num text-lg sm:text-xl">{formatMoney(row.marketValue)}</p>
-          <p className="mt-0.5 font-num text-sm text-[var(--gold)]">{formatGrams(grams)}</p>
+          <p className="font-num text-lg sm:text-xl">{formatMoney(amount, 2, currency)}</p>
           <p
             className={`mt-0.5 font-num text-sm ${
               tone === "down"
@@ -197,7 +204,7 @@ function HoldingRow({
                   : "text-[var(--muted)]"
             }`}
           >
-            {formatSignedMoney(row.unrealizedPnl)}
+            {formatSignedMoney(pnl, 2, currency)}
             <span className="mx-1.5 text-[var(--faint)]">·</span>
             {formatPct(vsCost)}
           </p>
@@ -206,11 +213,11 @@ function HoldingRow({
       <div className="holding-track hidden sm:block">
         <PriceRuler cost={row.averageCost} mark={row.markPrice} />
       </div>
-      <div className="weight-rail" aria-label={formatGrams(grams)}>
+      <div className="weight-rail" aria-label={formatMoney(amount, 0, currency)}>
         <span
           style={{
-            width: `${Math.max(totalGrams > 0 ? (grams / totalGrams) * 100 : row.weight * 100, 1.5)}%`,
-            background: GOLD,
+            width: `${Math.max(total > 0 ? (amount / total) * 100 : row.weight * 100, 1.5)}%`,
+            background: currency === "CNY" ? "#8d1f2f" : "#1c5c3c",
           }}
         />
       </div>

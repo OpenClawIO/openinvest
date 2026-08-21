@@ -1,15 +1,25 @@
-export function formatMoney(value: number | null | undefined, digits = 2) {
+import type { DisplayCurrency } from "./fx";
+
+export function formatMoney(
+  value: number | null | undefined,
+  digits = 2,
+  currency: DisplayCurrency = "USD",
+) {
   if (value == null || Number.isNaN(value)) return "—";
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat(currency === "CNY" ? "zh-CN" : "en-US", {
     style: "currency",
-    currency: "USD",
+    currency,
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   }).format(value);
 }
 
-export function formatSignedMoney(value: number) {
-  const formatted = formatMoney(Math.abs(value));
+export function formatSignedMoney(
+  value: number,
+  digits = 2,
+  currency: DisplayCurrency = "USD",
+) {
+  const formatted = formatMoney(Math.abs(value), digits, currency);
   if (value > 0) return `+${formatted}`;
   if (value < 0) return `−${formatted}`;
   return formatted;

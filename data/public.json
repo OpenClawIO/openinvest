@@ -36,10 +36,9 @@
     }
   ],
   "trades": [],
-  "gold": {
-    "usdPerTroyOunce": 4593.299805,
-    "usdPerGram": 147.6780179442833,
-    "quotedAt": "2026-08-21T11:10:09Z",
-    "source": "gold-api.com XAU/USD spot"
+  "fx": {
+    "usdCny": 6.7236,
+    "quotedAt": "2026-08-20T00:00:00Z",
+    "source": "frankfurter.app USD/CNY"
   }
 }

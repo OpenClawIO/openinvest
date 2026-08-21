@@ -1,28 +1,30 @@
-import { changeFromGrams, gramsFromUsd, type CoinPiece } from "@/lib/gold";
+import { packAmount, type CashPiece } from "@/lib/cash";
+import { currencyForLocale, toDisplayAmount, type DisplayCurrency } from "@/lib/fx";
+import type { Locale } from "@/lib/i18n";
 import type { PublicSnapshot } from "@/lib/portfolio";
 
-export type CoinStack = {
+export type CashStack = {
   id: string;
   label: string;
-  grams: number;
-  pieces: CoinPiece[];
+  amount: number;
+  pieces: CashPiece[];
 };
 
-export function stacksFromSnapshot(snapshot: PublicSnapshot): CoinStack[] {
-  const usdPerGram = snapshot.gold?.usdPerGram ?? 0;
-  return snapshot.holdings
+export function stacksFromSnapshot(
+  snapshot: PublicSnapshot,
+  locale: Locale,
+): { currency: DisplayCurrency; stacks: CashStack[] } {
+  const currency = currencyForLocale(locale);
+  const stacks = snapshot.holdings
     .map((holding) => {
-      const grams = gramsFromUsd(holding.marketValue, usdPerGram);
+      const amount = toDisplayAmount(holding.marketValue, currency, snapshot.fx);
       return {
         id: holding.symbol,
         label: holding.symbol,
-        grams,
-        pieces: changeFromGrams(grams),
+        amount,
+        pieces: packAmount(amount),
       };
     })
     .filter((stack) => stack.pieces.length > 0);
-}
-
-export function totalGrams(snapshot: PublicSnapshot) {
-  return gramsFromUsd(snapshot.nav, snapshot.gold?.usdPerGram ?? 0);
+  return { currency, stacks };
 }

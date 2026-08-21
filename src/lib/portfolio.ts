@@ -1,4 +1,4 @@
-import type { GoldQuote } from "./gold";
+import type { FxQuote } from "./fx";
 
 export type PublicHolding = {
   symbol: string;
@@ -34,5 +34,5 @@ export type PublicSnapshot = {
   unrealizedPnl: number;
   holdings: PublicHolding[];
   trades: PublicTrade[];
-  gold?: GoldQuote;
+  fx?: FxQuote;
 };

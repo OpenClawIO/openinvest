@@ -110,118 +110,62 @@ body {
   padding: 4.5rem 1.25rem 3.25rem;
 }
 
-.coin-piles {
+.cash-piles {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  gap: 2.5rem;
-  width: min(100%, 42rem);
+  gap: 2rem;
+  width: min(100%, 52rem);
   height: 100%;
   margin: 0 auto;
-  padding: 2.5rem 1.25rem;
+  padding: 2.5rem 1rem;
+  overflow: auto;
 }
 
-.coin-pile {
+.cash-pile {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
   gap: 0.35rem;
+  max-width: 22rem;
 }
 
-.coin-face {
+.cash-note {
   display: flex;
+  width: 4.6rem;
+  height: 2.15rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: radial-gradient(120% 90% at 32% 28%, #f8e6a8, #e4c36a 42%, #8f6a1f);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 1px 2px rgba(0, 0, 0, 0.45);
-  color: #3e2608;
+  border-radius: 0.28rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   line-height: 1;
 }
 
-.coin-face[data-denom="10"] {
-  width: 5.6rem;
-  height: 5.6rem;
+.cash-note.is-strap {
+  height: 2.7rem;
 }
 
-.coin-face[data-denom="5"] {
-  width: 4.1rem;
-  height: 4.1rem;
+.cash-note-mark {
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.coin-face[data-denom="2"] {
-  width: 2.85rem;
-  height: 2.85rem;
-}
-
-.coin-face[data-denom="1"] {
-  width: 2.15rem;
-  height: 2.15rem;
-}
-
-.coin-face-num {
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.coin-face-mark {
-  display: flex;
-  align-items: center;
-  gap: 0.18em;
-  margin-bottom: 0.12em;
-  font-size: 0.58em;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.gold-mark {
-  position: relative;
-  display: inline-block;
-  width: 0.72em;
-  height: 0.72em;
-  border: 1.5px solid currentColor;
-  border-radius: 50%;
-}
-
-.gold-mark::after {
-  position: absolute;
-  inset: 28%;
-  border-radius: 50%;
-  background: currentColor;
-  content: "";
-}
-
-.coin-face[data-denom="10"] .coin-face-num {
-  font-size: 1.7rem;
-}
-
-.coin-face[data-denom="5"] .coin-face-num {
-  font-size: 1.25rem;
-}
-
-.coin-face[data-denom="2"] .coin-face-num {
+.cash-note-num {
   font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.coin-face[data-denom="1"] .coin-face-num {
-  font-size: 0.78rem;
-}
-
-.coin-face-unit {
-  display: block;
-  margin-top: 0.1rem;
-  font-size: 0.62em;
+.cash-note-pack {
+  margin-top: 0.12rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
 }
 
-.coin-pile.is-active .coin-face {
-  filter: brightness(1.08);
-}
-
-.coin-pile.is-dim .coin-face {
+.cash-pile.is-dim .cash-note {
   opacity: 0.42;
 }
 

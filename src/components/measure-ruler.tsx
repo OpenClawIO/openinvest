@@ -1,6 +1,7 @@
 "use client";
 
 import { formatMoney, formatSignedMoney, pnlTone } from "@/lib/format";
+import type { DisplayCurrency } from "@/lib/fx";
 import type { Copy, Locale } from "@/lib/i18n";
 
 function toneColor(value: number) {
@@ -18,12 +19,14 @@ export function ValueRuler({
   cost,
   market,
   pnl,
+  currency = "USD",
   locale,
   t,
 }: {
   cost: number;
   market: number;
   pnl: number;
+  currency?: DisplayCurrency;
   locale: Locale;
   t: Copy;
 }) {
@@ -55,17 +58,17 @@ export function ValueRuler({
           className="measure-float font-num"
           style={{ left: `${marketLeft}%`, color: toneColor(pnl) }}
         >
-          {formatSignedMoney(pnl)}
+          {formatSignedMoney(pnl, 2, currency)}
         </span>
       </div>
       <div className="mt-1 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <div>
           <p className={`${labelClass} text-[var(--faint)]`}>{t.costBasis}</p>
-          <p className="font-num mt-1 text-sm sm:text-base">{formatMoney(cost)}</p>
+          <p className="font-num mt-1 text-sm sm:text-base">{formatMoney(cost, 2, currency)}</p>
         </div>
         <div className="text-right">
           <p className={`${labelClass} text-[var(--faint)]`}>{t.market}</p>
-          <p className="font-num mt-1 text-sm sm:text-base">{formatMoney(market)}</p>
+          <p className="font-num mt-1 text-sm sm:text-base">{formatMoney(market, 2, currency)}</p>
         </div>
       </div>
     </div>

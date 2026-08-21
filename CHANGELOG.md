@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Coins are now 1, 2, 5, and 10 g rounds with Au and the gold sun-mark on the face. Change is greedy from gold mass; dollars stay the static NAV.
+- Count the book in cash instead of gold: English uses modeled US dollar notes, 中文 uses modeled 人民币 notes at the baked USD/CNY rate.
 
 ## [0.3.0] - 2026-08-19
 

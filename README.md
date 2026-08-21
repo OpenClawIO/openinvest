@@ -12,19 +12,19 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page counts the book in **1, 2, 5, and 10 g gold coins**. Gram weight is stamped on the face. Names stay in type.
+The public page counts the book in **cash on the table**. English uses modeled US dollar notes. 中文 uses modeled 人民币 notes at the baked USD/CNY rate.
 
-当前公开页用 **1、2、5、10 克金币** 计数。克数打在币面上。名称只出现在文字里。
+当前公开页用桌上的现金计数。英文是美元纸币，中文是人民币纸币，汇率写入快照。
 
 | Layer | What it shows |
 | --- | --- |
-| Structure | 1 / 2 / 5 / 10 g rounds, sized by mass, greedy change from market value / gold spot. Au and the gram mark are on the face. |
+| Structure | Stylized $1–$100 notes in English, ¥1–¥100 notes in 中文. Straps of 10 or 100 keep the pile readable. |
 | Relationship | Cost and market on one ruler from zero. The segment between marks is P/L. |
-| Identity | Symbol, shares, cost, mark, and grams in HTML. Hover or click a stack to highlight its row. |
-| Time | Statement date on the stage. Gold spot is the quote at page build, not a live tick. |
-| Language | `English` / `中文` on the same page. Numbers and layout stay put. |
+| Identity | Symbol, shares, cost, mark, and amount in HTML. Hover or click a pile to highlight its row. |
+| Time | Statement date on the stage. USD/CNY is the quote at page build, not a live tick. |
+| Language | `English` / `中文` on the same page. English amounts are dollars; 中文 amounts are yuan. |
 
-净资产数字是静态的 `formatMoney(snapshot.nav)`，不会从 $0 往上跳。系统开启减少动态时，改为二维金币面，面额映射与 3D 相同。
+净资产数字是静态的。英文为 `formatMoney(..., "USD")`，中文为人民币。系统开启减少动态时，改为二维纸币面。
 
 ## What is public / 公开范围
 
@@ -32,7 +32,7 @@ Published in `data/public.json` and on the site:
 
 - Net asset value, cash, unrealized P/L
 - Each holding: symbol, shares, average cost, mark, market value, weight
-- Gold spot (XAU/USD) and gram mass at page build
+- USD/CNY at page build (used by the Chinese page)
 - Fills for the Flex query window (usually last business day)
 
 Never published (keep out of git and the frontend):
@@ -49,7 +49,7 @@ Never published (keep out of git and the frontend):
 - Next.js static export (`output: "export"`)
 - Flex Web Service v3 → `data/public.json`
 - Same-page locale: `?lang=en` | `?lang=zh`
-- Three.js studio of stacked 1 g gold coins. CI does not need Blender.
+- Three.js studio of stylized USD and RMB notes. CI does not need Blender.
 
 ## Setup
 

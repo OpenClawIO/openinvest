@@ -1,16 +1,18 @@
 "use client";
 
-import { formatGrams } from "@/lib/format";
-import { GOLD } from "@/lib/palette";
-import type { CoinStack } from "@/lib/studio";
+import { formatMoney } from "@/lib/format";
+import type { DisplayCurrency } from "@/lib/fx";
+import type { CashStack } from "@/lib/studio";
 
 export function StructureKey({
   stacks,
+  currency,
   activeId,
   onHover,
   onSelect,
 }: {
-  stacks: CoinStack[];
+  stacks: CashStack[];
+  currency: DisplayCurrency;
   activeId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
@@ -31,9 +33,12 @@ export function StructureKey({
             onBlur={() => onHover(null)}
             onClick={() => onSelect(stack.id)}
           >
-            <span className="holding-swatch" style={{ background: GOLD }} />
+            <span
+              className="holding-swatch"
+              style={{ background: currency === "CNY" ? "#8d1f2f" : "#1c5c3c" }}
+            />
             <span className="ticker">{stack.label}</span>
-            <span className="font-num text-[var(--muted)]">{formatGrams(stack.grams)}</span>
+            <span className="font-num text-[var(--muted)]">{formatMoney(stack.amount, 0, currency)}</span>
           </button>
         );
       })}
