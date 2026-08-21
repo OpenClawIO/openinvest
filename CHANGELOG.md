@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Count the book in cash instead of gold: English uses modeled US dollar notes, 中文 uses modeled 人民币 notes at the baked USD/CNY rate.
+- Count the book in cash instead of gold: English uses modeled US dollar notes, 中文 uses modeled 人民币 notes at the baked USD/CNY rate. Notes have paper curl, cream edges, front and back engraving, and original USD/CNY ornament — not flat color cards.
 
 ## [0.3.0] - 2026-08-19
 

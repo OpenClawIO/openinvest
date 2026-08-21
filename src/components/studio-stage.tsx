@@ -3,8 +3,10 @@
 import { CASH_DENOMS, type CashDenom, type CashKind, type CashPiece } from "@/lib/cash";
 import type { DisplayCurrency } from "@/lib/fx";
 import {
-  createNoteGeometry,
+  createNoteBody,
   createNoteTexture,
+  createPrintPlane,
+  createPrintPlaneBack,
   NOTE_SIZE,
   notePalette,
   thicknessFor,
@@ -18,6 +20,7 @@ import * as THREE from "three";
 const STUDIO = "#000814";
 const LOOK_AT: [number, number, number] = [0, 0.04, 0];
 const GROUP_GAP = 2.35;
+const NOTE_KINDS: CashKind[] = ["note", "strap10", "strap100"];
 
 type LaidPiece = {
   piece: CashPiece;
@@ -69,8 +72,11 @@ function NoteMesh({
   z,
   rotY,
   currency,
-  geometry,
-  texture,
+  body,
+  frontGeo,
+  backGeo,
+  frontMap,
+  backMap,
   active,
   dimmed,
 }: {
@@ -79,8 +85,11 @@ function NoteMesh({
   z: number;
   rotY: number;
   currency: DisplayCurrency;
-  geometry: THREE.ExtrudeGeometry;
-  texture: THREE.CanvasTexture;
+  body: THREE.BufferGeometry;
+  frontGeo: THREE.BufferGeometry;
+  backGeo: THREE.BufferGeometry;
+  frontMap: THREE.CanvasTexture;
+  backMap: THREE.CanvasTexture;
   active: boolean;
   dimmed: boolean;
 }) {
@@ -89,47 +98,63 @@ function NoteMesh({
   const face = useRef<THREE.MeshPhysicalMaterial>(null);
   const colors = notePalette(currency, piece.denom);
   const paperColor = useMemo(() => new THREE.Color(colors.paper), [colors.paper]);
-  const dimColor = useMemo(() => new THREE.Color(colors.paper).lerp(new THREE.Color(STUDIO), 0.45), [colors.paper]);
-  const display = useRef(paperColor.clone());
+  const dimColor = useMemo(() => new THREE.Color(colors.paper).lerp(new THREE.Color(STUDIO), 0.42), [colors.paper]);
   const lift = useRef(0);
   const size = NOTE_SIZE[currency];
   const thickness = thicknessFor(piece.kind);
 
   useFrame((_, delta) => {
-    lift.current = THREE.MathUtils.damp(lift.current, active ? 0.03 : 0, 8, delta);
+    lift.current = THREE.MathUtils.damp(lift.current, active ? 0.028 : 0, 8, delta);
     if (group.current) group.current.position.y = lift.current;
-    display.current.lerp(dimmed ? dimColor : paperColor, 1 - Math.exp(-10 * delta));
-    if (paper.current) paper.current.color.copy(display.current);
-    if (face.current) {
-      face.current.color.copy(dimmed ? dimColor : new THREE.Color("#ffffff"));
-      face.current.roughness = THREE.MathUtils.damp(face.current.roughness, dimmed ? 0.55 : 0.32, 8, delta);
+    const roughness = THREE.MathUtils.damp(face.current?.roughness ?? 0.38, dimmed ? 0.58 : 0.38, 8, delta);
+    if (paper.current) {
+      paper.current.color.lerp(dimmed ? dimColor : paperColor, 1 - Math.exp(-10 * delta));
     }
+    if (face.current) face.current.roughness = roughness;
   });
 
   return (
     <group ref={group} position={[x, 0, z]} rotation={[0, rotY, 0]}>
-      <mesh geometry={geometry} castShadow receiveShadow>
+      <mesh geometry={body} castShadow receiveShadow>
         <meshPhysicalMaterial
           ref={paper}
-          color={colors.paper}
-          roughness={0.62}
-          metalness={0.04}
+          color={colors.cream}
+          vertexColors
+          roughness={0.82}
+          metalness={0.02}
+          sheen={0.28}
+          sheenRoughness={0.7}
+          sheenColor={colors.cream}
         />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, thickness + 0.0008, 0]} renderOrder={1}>
-        <planeGeometry args={[size.width * 0.92, size.height * 0.88]} />
+      <mesh geometry={frontGeo} renderOrder={1}>
         <meshPhysicalMaterial
           ref={face}
-          map={texture}
-          roughness={0.32}
-          metalness={0.06}
+          map={frontMap}
+          roughness={0.38}
+          metalness={0.04}
+          sheen={0.18}
+          sheenColor="#fff6e8"
         />
       </mesh>
+      <mesh geometry={backGeo}>
+        <meshPhysicalMaterial map={backMap} roughness={0.42} metalness={0.04} />
+      </mesh>
       {piece.kind !== "note" ? (
-        <mesh position={[0, thickness * 0.55, 0]}>
-          <boxGeometry args={[size.width * 1.04, thickness * 0.16, size.height * 0.2]} />
-          <meshStandardMaterial color={colors.band} roughness={0.7} />
-        </mesh>
+        <>
+          <mesh position={[0, thickness * 0.62, 0]}>
+            <boxGeometry args={[size.width * 1.03, thickness * 0.12, size.height * 0.18]} />
+            <meshStandardMaterial color={colors.band} roughness={0.62} />
+          </mesh>
+          <mesh position={[size.width * 0.48, thickness * 0.5, 0]}>
+            <boxGeometry args={[0.018, thickness * 0.92, size.height * 0.18]} />
+            <meshStandardMaterial color={colors.band} roughness={0.62} />
+          </mesh>
+          <mesh position={[-size.width * 0.48, thickness * 0.5, 0]}>
+            <boxGeometry args={[0.018, thickness * 0.92, size.height * 0.18]} />
+            <meshStandardMaterial color={colors.band} roughness={0.62} />
+          </mesh>
+        </>
       ) : null}
     </group>
   );
@@ -139,8 +164,11 @@ function CashGroup({
   stack,
   position,
   currency,
-  geometries,
-  textures,
+  bodies,
+  fronts,
+  backs,
+  frontMaps,
+  backMaps,
   active,
   dimmed,
   onHover,
@@ -149,8 +177,11 @@ function CashGroup({
   stack: CashStack;
   position: [number, number, number];
   currency: DisplayCurrency;
-  geometries: Record<CashKind, THREE.ExtrudeGeometry>;
-  textures: Record<CashDenom, THREE.CanvasTexture>;
+  bodies: Record<CashKind, THREE.BufferGeometry>;
+  fronts: Record<CashKind, THREE.BufferGeometry>;
+  backs: Record<CashKind, THREE.BufferGeometry>;
+  frontMaps: Record<CashDenom, THREE.CanvasTexture>;
+  backMaps: Record<CashDenom, THREE.CanvasTexture>;
   active: boolean;
   dimmed: boolean;
   onHover: (id: string | null) => void;
@@ -178,8 +209,11 @@ function CashGroup({
           z={item.z}
           rotY={item.rotY}
           currency={currency}
-          geometry={geometries[item.piece.kind]}
-          texture={textures[item.piece.denom]}
+          body={bodies[item.piece.kind]}
+          frontGeo={fronts[item.piece.kind]}
+          backGeo={backs[item.piece.kind]}
+          frontMap={frontMaps[item.piece.denom]}
+          backMap={backMaps[item.piece.denom]}
           active={active}
           dimmed={dimmed}
         />
@@ -217,29 +251,46 @@ function StillLife({
   onSelect: (id: string) => void;
 }) {
   const size = NOTE_SIZE[currency];
-  const geometries = useMemo(() => {
-    const kinds: CashKind[] = ["note", "strap10", "strap100"];
-    const map = {} as Record<CashKind, THREE.ExtrudeGeometry>;
-    for (const kind of kinds) {
-      map[kind] = createNoteGeometry(size.width, size.height, thicknessFor(kind));
+  const bodies = useMemo(() => {
+    const map = {} as Record<CashKind, THREE.BufferGeometry>;
+    for (const kind of NOTE_KINDS) {
+      map[kind] = createNoteBody(size.width, size.height, thicknessFor(kind), kind === "note");
     }
     return map;
   }, [size.height, size.width]);
-
-  const textures = useMemo(() => {
-    const map = {} as Record<CashDenom, THREE.CanvasTexture>;
-    for (const denom of CASH_DENOMS) {
-      map[denom] = createNoteTexture(currency, denom);
+  const fronts = useMemo(() => {
+    const map = {} as Record<CashKind, THREE.BufferGeometry>;
+    for (const kind of NOTE_KINDS) {
+      map[kind] = createPrintPlane(size.width, size.height, thicknessFor(kind) + 0.0007, kind === "note");
     }
+    return map;
+  }, [size.height, size.width]);
+  const backs = useMemo(() => {
+    const map = {} as Record<CashKind, THREE.BufferGeometry>;
+    for (const kind of NOTE_KINDS) {
+      map[kind] = createPrintPlaneBack(size.width, size.height, -0.0005, kind === "note");
+    }
+    return map;
+  }, [size.height, size.width]);
+  const frontMaps = useMemo(() => {
+    const map = {} as Record<CashDenom, THREE.CanvasTexture>;
+    for (const denom of CASH_DENOMS) map[denom] = createNoteTexture(currency, denom, "front");
+    return map;
+  }, [currency]);
+  const backMaps = useMemo(() => {
+    const map = {} as Record<CashDenom, THREE.CanvasTexture>;
+    for (const denom of CASH_DENOMS) map[denom] = createNoteTexture(currency, denom, "back");
     return map;
   }, [currency]);
 
   useLayoutEffect(() => {
     return () => {
-      for (const geometry of Object.values(geometries)) geometry.dispose();
-      for (const texture of Object.values(textures)) texture.dispose();
+      for (const geometry of [...Object.values(bodies), ...Object.values(fronts), ...Object.values(backs)]) {
+        geometry.dispose();
+      }
+      for (const texture of [...Object.values(frontMaps), ...Object.values(backMaps)]) texture.dispose();
     };
-  }, [geometries, textures]);
+  }, [backs, bodies, frontMaps, backMaps, fronts]);
 
   const layout = useMemo(() => {
     const span = (stacks.length - 1) * GROUP_GAP;
@@ -257,8 +308,11 @@ function StillLife({
           stack={item.stack}
           position={item.position}
           currency={currency}
-          geometries={geometries}
-          textures={textures}
+          bodies={bodies}
+          fronts={fronts}
+          backs={backs}
+          frontMaps={frontMaps}
+          backMaps={backMaps}
           active={activeId === item.stack.id}
           dimmed={activeId != null && activeId !== item.stack.id}
           onHover={onHover}
@@ -362,7 +416,7 @@ export function StudioStage({
       shadows
       dpr={[1, 1.6]}
       gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      camera={{ position: [0.45, 1.7, 2.45], fov: 32, near: 0.1, far: 40 }}
+      camera={{ position: [0.28, 1.42, 2.05], fov: 30, near: 0.1, far: 40 }}
       onCreated={({ camera, gl }) => {
         camera.lookAt(...LOOK_AT);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
