@@ -93,7 +93,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
               {t.listed(snapshot.holdings.length, formatMoney(snapshot.cash))}
             </p>
           </div>
-          <div className="mt-4">
+          <div className="mt-2">
             {snapshot.holdings.map((row, index) => (
               <HoldingRow
                 key={row.symbol}
@@ -111,24 +111,25 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
         <section className="mt-12 sm:mt-16">
           <h2 className={kicker(locale)}>{t.activity}</h2>
           {snapshot.trades.length === 0 ? (
-            <p className="dek mt-3 text-[var(--muted)]">{t.noFills(asOf)}</p>
+            <p className="mt-4 text-sm text-[var(--muted)]">{t.noFills(asOf)}</p>
           ) : (
-            <div className="mt-3">
+            <div className="mt-2">
               {snapshot.trades.map((trade, index) => (
                 <div
                   key={`${trade.symbol}-${trade.date}-${index}`}
-                  className="grid grid-cols-2 gap-2 border-b border-[var(--line)] py-3 text-sm last:border-0 sm:grid-cols-4 sm:gap-3 sm:py-3.5"
+                  className="money-row"
                 >
-                  <span className="font-num text-[var(--muted)]">
-                    {formatLongDate(trade.date, locale)}
-                  </span>
-                  <span>
-                    {trade.side === "BUY" ? t.buy : trade.side === "SELL" ? t.sell : trade.side}
-                  </span>
-                  <span className="ticker">{trade.symbol}</span>
-                  <span className="font-num sm:text-right">
+                  <div className="min-w-0">
+                    <p className="ticker">{trade.symbol}</p>
+                    <p className="mt-0.5 text-sm text-[var(--muted)]">
+                      {trade.side === "BUY" ? t.buy : trade.side === "SELL" ? t.sell : trade.side}
+                      <span className="mx-1.5 text-[var(--faint)]">·</span>
+                      {formatLongDate(trade.date, locale)}
+                    </p>
+                  </div>
+                  <p className="font-num shrink-0 text-[15px]">
                     {formatQty(trade.quantity)} @ {formatMoney(trade.tradePrice)}
-                  </span>
+                  </p>
                 </div>
               ))}
             </div>
@@ -183,25 +184,19 @@ function HoldingRow({
         }
       }}
     >
-      <div className="holding-grid">
+      <div className="money-row">
         <div className="min-w-0">
-          <div className="flex items-baseline gap-2 sm:gap-3">
-            <span className="holding-swatch" style={{ background: color }} />
-            <span className="ticker text-base sm:text-lg">{row.symbol}</span>
-            <span className="text-[11px] text-[var(--faint)] sm:text-xs">{row.exchange}</span>
-          </div>
-          <p className="mt-1 truncate text-sm text-[var(--muted)]">{row.description}</p>
-          <p className="mt-2 hidden font-num text-xs text-[var(--faint)] sm:block">
+          <p className="ticker text-[15px] sm:text-base">{row.symbol}</p>
+          <p className="mt-0.5 truncate text-sm text-[var(--muted)]">
+            {row.description}
+            <span className="mx-1.5 text-[var(--faint)]">·</span>
             {t.shares(formatQty(row.quantity))}
           </p>
         </div>
-        <div className="hidden sm:block">
-          <PriceRuler cost={row.averageCost} mark={row.markPrice} t={t} />
-        </div>
-        <div className="text-right">
-          <div className="font-num text-[15px] sm:text-base">{formatMoney(row.marketValue)}</div>
-          <div
-            className={`mt-1 font-num text-xs sm:text-sm ${
+        <div className="shrink-0 text-right">
+          <p className="font-num text-[15px] sm:text-base">{formatMoney(row.marketValue)}</p>
+          <p
+            className={`mt-0.5 font-num text-sm ${
               tone === "down"
                 ? "text-[var(--down)]"
                 : tone === "up"
@@ -209,14 +204,17 @@ function HoldingRow({
                   : "text-[var(--muted)]"
             }`}
           >
-            {formatSignedMoney(row.unrealizedPnl)} · {formatPct(vsCost)}
-          </div>
-          <div className="mt-1 font-num text-xs text-[var(--faint)]">{formatWeight(row.weight)}</div>
+            {formatSignedMoney(row.unrealizedPnl)}
+            <span className="mx-1.5 text-[var(--faint)]">·</span>
+            {formatPct(vsCost)}
+          </p>
         </div>
-        <p className="col-span-2 font-num text-xs text-[var(--faint)] sm:hidden">
-          {t.shares(formatQty(row.quantity))} · {formatMoney(row.averageCost)} →{" "}
-          {formatMoney(row.markPrice)}
-        </p>
+      </div>
+      <div className="holding-track hidden sm:block">
+        <PriceRuler cost={row.averageCost} mark={row.markPrice} />
+      </div>
+      <div className="weight-rail" aria-label={formatWeight(row.weight)}>
+        <span style={{ width: `${Math.max(row.weight * 100, 1.5)}%`, background: color }} />
       </div>
     </article>
   );

@@ -7,6 +7,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Tightened the page toward Copilot-style money hierarchy: net asset value and a single under/over-cost line first, allocation as the inspectable chart, cost versus market as a follow-the-line measure, holdings as left-name / right-amount rows.
+
 ## [0.3.0] - 2026-08-19
 
 This is the current public presentation. Allocation is structure, cost versus market is a ruler, names and prices stay in type.

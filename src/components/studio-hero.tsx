@@ -3,7 +3,15 @@
 import { StructureBars } from "@/components/structure-bars";
 import { StructureKey } from "@/components/structure-key";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { formatLongDate, formatMoney, formatQty, formatWeight } from "@/lib/format";
+import {
+  formatLongDate,
+  formatMoney,
+  formatPct,
+  formatQty,
+  formatSignedMoney,
+  formatWeight,
+  pnlTone,
+} from "@/lib/format";
 import type { Copy, Locale } from "@/lib/i18n";
 import type { PublicSnapshot } from "@/lib/portfolio";
 import { volumesFromHoldings } from "@/lib/studio";
@@ -17,6 +25,12 @@ const StudioCanvas = dynamic(
 
 function kicker(locale: Locale) {
   return locale === "zh" ? "kicker-zh" : "kicker";
+}
+
+function statusCopy(pnl: number, t: Copy) {
+  if (pnl < 0) return t.underCost;
+  if (pnl > 0) return t.overCost;
+  return t.vsCost;
 }
 
 export function StudioHero({
@@ -38,9 +52,33 @@ export function StudioHero({
   const volumes = useMemo(() => volumesFromHoldings(snapshot.holdings), [snapshot.holdings]);
   const asOf = formatLongDate(snapshot.asOf, locale);
   const activeHolding = snapshot.holdings.find((row) => row.symbol === activeId);
+  const costBasis = snapshot.holdings.reduce((sum, row) => sum + row.costBasis, 0);
+  const vsCost = costBasis > 0 ? snapshot.unrealizedPnl / costBasis : 0;
+  const tone = pnlTone(snapshot.unrealizedPnl);
 
   return (
     <section>
+      <div className="studio-caption studio-summary">
+        <p className={kicker(locale)}>{t.nav}</p>
+        <h1 className="font-display mt-3 break-words text-[clamp(2.8rem,10vw,5.25rem)] leading-[0.9]">
+          {formatMoney(snapshot.nav)}
+        </h1>
+        <p
+          className={`mt-4 text-[15px] sm:text-base ${
+            tone === "down"
+              ? "text-[var(--down)]"
+              : tone === "up"
+                ? "text-[var(--up)]"
+                : "text-[var(--muted)]"
+          }`}
+        >
+          <span className="font-num">{formatSignedMoney(snapshot.unrealizedPnl)}</span>
+          <span className="mx-2 text-[var(--faint)]">·</span>
+          <span className="font-num">{formatPct(vsCost)}</span>
+          <span className="ml-1.5 text-[var(--muted)]">{statusCopy(snapshot.unrealizedPnl, t)}</span>
+        </p>
+      </div>
+
       <div className="studio-frame">
         <Suspense fallback={<div className="studio-stage-slot" />}>
           {reduced ? (
@@ -67,22 +105,18 @@ export function StudioHero({
         </p>
       </div>
 
-      <div className="studio-caption">
+      <div className="studio-caption studio-key">
+        <p className="mb-5 min-h-6 max-w-xl text-sm leading-6 text-[var(--muted)]">
+          {activeHolding
+            ? `${activeHolding.symbol} · ${activeHolding.description} · ${t.shares(formatQty(activeHolding.quantity))} · ${formatWeight(activeHolding.weight)}`
+            : t.inspectHint}
+        </p>
         <StructureKey
           holdings={snapshot.holdings}
           activeId={activeId}
           onHover={onHover}
           onSelect={onSelect}
         />
-        <p className={`mt-8 ${kicker(locale)}`}>{t.nav}</p>
-        <h1 className="font-display mt-3 break-words text-[clamp(2.6rem,9vw,4.75rem)] leading-[0.92]">
-          {formatMoney(snapshot.nav)}
-        </h1>
-        <p className="mt-5 min-h-10 max-w-xl text-sm leading-6 text-[var(--muted)]">
-          {activeHolding
-            ? `${activeHolding.symbol} · ${activeHolding.description} · ${t.shares(formatQty(activeHolding.quantity))} · ${formatWeight(activeHolding.weight)}`
-            : t.inspectHint}
-        </p>
       </div>
     </section>
   );
