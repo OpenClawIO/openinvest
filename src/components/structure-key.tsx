@@ -1,39 +1,39 @@
 "use client";
 
-import { formatWeight } from "@/lib/format";
-import { colorForIndex } from "@/lib/palette";
-import type { PublicHolding } from "@/lib/portfolio";
+import { formatGrams } from "@/lib/format";
+import { GOLD } from "@/lib/palette";
+import type { CoinStack } from "@/lib/studio";
 
 export function StructureKey({
-  holdings,
+  stacks,
   activeId,
   onHover,
   onSelect,
 }: {
-  holdings: PublicHolding[];
+  stacks: CoinStack[];
   activeId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
 }) {
   return (
     <div className="structure-key">
-      {holdings.map((row, index) => {
-        const active = activeId === row.symbol;
+      {stacks.map((stack) => {
+        const active = activeId === stack.id;
         return (
           <button
-            key={row.symbol}
+            key={stack.id}
             type="button"
             aria-pressed={active}
             className={`structure-key-item ${active ? "is-active" : ""}`}
-            onMouseEnter={() => onHover(row.symbol)}
+            onMouseEnter={() => onHover(stack.id)}
             onMouseLeave={() => onHover(null)}
-            onFocus={() => onHover(row.symbol)}
+            onFocus={() => onHover(stack.id)}
             onBlur={() => onHover(null)}
-            onClick={() => onSelect(row.symbol)}
+            onClick={() => onSelect(stack.id)}
           >
-            <span className="holding-swatch" style={{ background: colorForIndex(index) }} />
-            <span className="ticker">{row.symbol}</span>
-            <span className="font-num text-[var(--muted)]">{formatWeight(row.weight)}</span>
+            <span className="holding-swatch" style={{ background: GOLD }} />
+            <span className="ticker">{stack.label}</span>
+            <span className="font-num text-[var(--muted)]">{formatGrams(stack.grams)}</span>
           </button>
         );
       })}

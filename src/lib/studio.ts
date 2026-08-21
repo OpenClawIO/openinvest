@@ -1,22 +1,32 @@
-import { colorForIndex } from "@/lib/palette";
-import type { PublicHolding } from "@/lib/portfolio";
+import { coinsFromGrams, gramsFromUsd } from "@/lib/gold";
+import type { PublicSnapshot } from "@/lib/portfolio";
 
-export type StudioVolume = {
+export type CoinStack = {
   id: string;
-  color: string;
-  weight: number;
   label: string;
+  grams: number;
+  coins: number;
+  remainder: number;
 };
 
-export function barWidth(weight: number, span = 2.55) {
-  return Math.max(weight * span, 0.2);
+export function stacksFromSnapshot(snapshot: PublicSnapshot): CoinStack[] {
+  const usdPerGram = snapshot.gold?.usdPerGram ?? 0;
+  return snapshot.holdings
+    .map((holding) => {
+      const { full, remainder, grams } = coinsFromGrams(
+        gramsFromUsd(holding.marketValue, usdPerGram),
+      );
+      return {
+        id: holding.symbol,
+        label: holding.symbol,
+        grams,
+        coins: full,
+        remainder,
+      };
+    })
+    .filter((stack) => stack.grams >= 0.05);
 }
 
-export function volumesFromHoldings(holdings: PublicHolding[]): StudioVolume[] {
-  return holdings.map((holding, index) => ({
-    id: holding.symbol,
-    color: colorForIndex(index),
-    weight: holding.weight,
-    label: holding.symbol,
-  }));
+export function totalGrams(snapshot: PublicSnapshot) {
+  return gramsFromUsd(snapshot.nav, snapshot.gold?.usdPerGram ?? 0);
 }

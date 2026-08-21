@@ -1,42 +1,50 @@
 "use client";
 
-import type { StudioVolume } from "@/lib/studio";
+import type { CoinStack } from "@/lib/studio";
 
 export function StructureBars({
-  volumes,
+  stacks,
   activeId,
   onHover,
   onSelect,
   ariaLabel,
 }: {
-  volumes: StudioVolume[];
+  stacks: CoinStack[];
   activeId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
   ariaLabel: string;
 }) {
   return (
-    <div className="structure-bars" role="group" aria-label={ariaLabel}>
-      {volumes.map((volume) => {
-        const active = activeId === volume.id;
+    <div className="coin-piles" role="group" aria-label={ariaLabel}>
+      {stacks.map((stack) => {
+        const active = activeId === stack.id;
         const dimmed = activeId != null && !active;
+        const discs = stack.coins + (stack.remainder > 0.05 ? 1 : 0);
         return (
           <button
-            key={volume.id}
+            key={stack.id}
             type="button"
             aria-pressed={active}
-            aria-label={volume.label}
-            className={`structure-bar ${active ? "is-active" : ""} ${dimmed ? "is-dim" : ""}`}
-            style={{
-              flexGrow: Math.max(volume.weight, 0.04),
-              background: volume.color,
-            }}
-            onMouseEnter={() => onHover(volume.id)}
+            aria-label={stack.label}
+            className={`coin-pile ${active ? "is-active" : ""} ${dimmed ? "is-dim" : ""}`}
+            onMouseEnter={() => onHover(stack.id)}
             onMouseLeave={() => onHover(null)}
-            onFocus={() => onHover(volume.id)}
+            onFocus={() => onHover(stack.id)}
             onBlur={() => onHover(null)}
-            onClick={() => onSelect(volume.id)}
-          />
+            onClick={() => onSelect(stack.id)}
+          >
+            {Array.from({ length: Math.max(discs, 1) }, (_, index) => {
+              const partial = index === stack.coins;
+              return (
+                <span
+                  key={index}
+                  className={`coin-disc ${partial ? "is-partial" : ""}`}
+                  style={partial ? { transform: `scaleY(${Math.max(stack.remainder, 0.18)})` } : undefined}
+                />
+              );
+            })}
+          </button>
         );
       })}
     </div>

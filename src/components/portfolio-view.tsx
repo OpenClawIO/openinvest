@@ -5,16 +5,17 @@ import { PriceRuler } from "@/components/measure-ruler";
 import { StudioHero } from "@/components/studio-hero";
 import { useLocale } from "@/components/locale-provider";
 import {
+  formatGrams,
   formatLongDate,
   formatMoney,
   formatPct,
   formatQty,
   formatSignedMoney,
-  formatWeight,
   pnlTone,
 } from "@/lib/format";
+import { gramsFromUsd } from "@/lib/gold";
 import type { Copy, Locale } from "@/lib/i18n";
-import { colorForIndex } from "@/lib/palette";
+import { GOLD } from "@/lib/palette";
 import { APP_VERSION } from "@/lib/version";
 import type { PublicHolding, PublicSnapshot } from "@/lib/portfolio";
 import { useState } from "react";
@@ -82,11 +83,12 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
             </p>
           </div>
           <div className="mt-2">
-            {snapshot.holdings.map((row, index) => (
+            {snapshot.holdings.map((row) => (
               <HoldingRow
                 key={row.symbol}
                 row={row}
-                color={colorForIndex(index)}
+                grams={gramsFromUsd(row.marketValue, snapshot.gold?.usdPerGram ?? 0)}
+                totalGrams={gramsFromUsd(snapshot.nav, snapshot.gold?.usdPerGram ?? 0)}
                 active={activeId === row.symbol}
                 onHover={setHoverId}
                 onSelect={select}
@@ -137,14 +139,16 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
 
 function HoldingRow({
   row,
-  color,
+  grams,
+  totalGrams,
   active,
   onHover,
   onSelect,
   t,
 }: {
   row: PublicHolding;
-  color: string;
+  grams: number;
+  totalGrams: number;
   active: boolean;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
@@ -183,6 +187,7 @@ function HoldingRow({
         </div>
         <div className="shrink-0 text-right">
           <p className="font-num text-lg sm:text-xl">{formatMoney(row.marketValue)}</p>
+          <p className="mt-0.5 font-num text-sm text-[var(--gold)]">{formatGrams(grams)}</p>
           <p
             className={`mt-0.5 font-num text-sm ${
               tone === "down"
@@ -201,8 +206,13 @@ function HoldingRow({
       <div className="holding-track hidden sm:block">
         <PriceRuler cost={row.averageCost} mark={row.markPrice} />
       </div>
-      <div className="weight-rail" aria-label={formatWeight(row.weight)}>
-        <span style={{ width: `${Math.max(row.weight * 100, 1.5)}%`, background: color }} />
+      <div className="weight-rail" aria-label={formatGrams(grams)}>
+        <span
+          style={{
+            width: `${Math.max(totalGrams > 0 ? (grams / totalGrams) * 100 : row.weight * 100, 1.5)}%`,
+            background: GOLD,
+          }}
+        />
       </div>
     </article>
   );

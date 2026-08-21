@@ -5,6 +5,7 @@ import { StructureKey } from "@/components/structure-key";
 import { ValueRuler } from "@/components/measure-ruler";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import {
+  formatGrams,
   formatLongDate,
   formatMoney,
   formatPct,
@@ -13,9 +14,10 @@ import {
   formatWeight,
   pnlTone,
 } from "@/lib/format";
+import { gramsFromUsd } from "@/lib/gold";
 import type { Copy, Locale } from "@/lib/i18n";
 import type { PublicSnapshot } from "@/lib/portfolio";
-import { volumesFromHoldings } from "@/lib/studio";
+import { stacksFromSnapshot, totalGrams } from "@/lib/studio";
 import dynamic from "next/dynamic";
 import { Suspense, useMemo } from "react";
 
@@ -50,12 +52,16 @@ export function StudioHero({
   onSelect: (id: string) => void;
 }) {
   const reduced = usePrefersReducedMotion();
-  const volumes = useMemo(() => volumesFromHoldings(snapshot.holdings), [snapshot.holdings]);
+  const stacks = useMemo(() => stacksFromSnapshot(snapshot), [snapshot]);
   const asOf = formatLongDate(snapshot.asOf, locale);
   const activeHolding = snapshot.holdings.find((row) => row.symbol === activeId);
   const costBasis = snapshot.holdings.reduce((sum, row) => sum + row.costBasis, 0);
   const vsCost = costBasis > 0 ? snapshot.unrealizedPnl / costBasis : 0;
   const tone = pnlTone(snapshot.unrealizedPnl);
+  const gold = snapshot.gold;
+  const navGrams = totalGrams(snapshot);
+  const activeGrams =
+    activeHolding && gold ? gramsFromUsd(activeHolding.marketValue, gold.usdPerGram) : 0;
 
   return (
     <section>
@@ -64,6 +70,14 @@ export function StudioHero({
         <h1 className="font-money mt-3 break-words text-[clamp(3rem,11vw,5.75rem)] leading-[0.88]">
           {formatMoney(snapshot.nav)}
         </h1>
+        {gold ? (
+          <p className="gold-mass font-money mt-3 text-[clamp(1.35rem,4vw,2.15rem)] leading-none">
+            {formatGrams(navGrams)} Au
+          </p>
+        ) : null}
+        {gold ? (
+          <p className="mt-2 text-sm text-[var(--muted)]">{t.coinRule(formatMoney(gold.usdPerGram))}</p>
+        ) : null}
         <p
           className={`status-chip ${
             tone === "up" ? "is-up text-[var(--up)]" : tone === "down" ? "text-[var(--down)]" : "is-flat"
@@ -87,7 +101,7 @@ export function StudioHero({
         <Suspense fallback={<div className="studio-stage-slot" />}>
           {reduced ? (
             <StructureBars
-              volumes={volumes}
+              stacks={stacks}
               activeId={activeId}
               onHover={onHover}
               onSelect={onSelect}
@@ -95,7 +109,7 @@ export function StudioHero({
             />
           ) : (
             <StudioCanvas
-              volumes={volumes}
+              stacks={stacks}
               activeId={activeId}
               onHover={onHover}
               onSelect={onSelect}
@@ -106,17 +120,23 @@ export function StudioHero({
           {asOf}
           <span className="mx-2 text-[var(--faint)]">·</span>
           {t.delayedClose}
+          {gold ? (
+            <>
+              <span className="mx-2 text-[var(--faint)]">·</span>
+              XAU {formatMoney(gold.usdPerTroyOunce, 0)}
+            </>
+          ) : null}
         </p>
       </div>
 
       <div className="studio-caption studio-key">
         <p className="mb-5 min-h-6 max-w-xl text-sm leading-6 text-[var(--muted)]">
           {activeHolding
-            ? `${activeHolding.symbol} · ${activeHolding.description} · ${t.shares(formatQty(activeHolding.quantity))} · ${formatWeight(activeHolding.weight)}`
+            ? `${activeHolding.symbol} · ${activeHolding.description} · ${t.shares(formatQty(activeHolding.quantity))} · ${formatGrams(activeGrams)} · ${formatWeight(activeHolding.weight)}`
             : t.inspectHint}
         </p>
         <StructureKey
-          holdings={snapshot.holdings}
+          stacks={stacks}
           activeId={activeId}
           onHover={onHover}
           onSelect={onSelect}

@@ -12,19 +12,19 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-0.3.0 is the current public page. Each layer carries one kind of information:
+The public page counts the book in **1 g gold coins**. Each coin is one gram at the XAU/USD spot baked into the snapshot. Names stay in type.
+
+当前公开页用 **1 克金币** 计数。一枚金币是一克，按写入快照的黄金现价。名称只出现在文字里。
 
 | Layer | What it shows |
 | --- | --- |
-| Structure | Adjacent same-height volumes. Width = market weight. No ticker text in WebGL. |
+| Structure | Stacks of modeled 1 g rounds. Coin count = market value / gold USD per gram. No ticker text in WebGL. |
 | Relationship | Cost and market on one ruler from zero. The segment between marks is P/L. |
-| Identity | Symbol, shares, cost, and mark in HTML. Hover or click a block to highlight its row. |
-| Time | Statement date on the stage. Fills for the Flex window only. No live ticks, no invented history. |
+| Identity | Symbol, shares, cost, mark, and grams in HTML. Hover or click a stack to highlight its row. |
+| Time | Statement date on the stage. Gold spot is the quote at page build, not a live tick. |
 | Language | `English` / `中文` on the same page. Numbers and layout stay put. |
 
-净资产数字是静态的 `formatMoney(snapshot.nav)`，不会从 $0 往上跳。系统开启减少动态时，结构层改为等高二维条，映射与 3D 相同。
-
-0.3.0 为当前公开呈现。结构用体块宽度表达仓位；成本与市值共用一把尺子；名称和价格只出现在文字里；时间只作为日终快照说明；中英同页切换。
+净资产数字是静态的 `formatMoney(snapshot.nav)`，不会从 $0 往上跳。系统开启减少动态时，金币堆改为二维金片，克重映射与 3D 相同。
 
 ## What is public / 公开范围
 
@@ -32,6 +32,7 @@ Published in `data/public.json` and on the site:
 
 - Net asset value, cash, unrealized P/L
 - Each holding: symbol, shares, average cost, mark, market value, weight
+- Gold spot (XAU/USD) and gram mass at page build
 - Fills for the Flex query window (usually last business day)
 
 Never published (keep out of git and the frontend):
@@ -48,7 +49,7 @@ Never published (keep out of git and the frontend):
 - Next.js static export (`output: "export"`)
 - Flex Web Service v3 → `data/public.json`
 - Same-page locale: `?lang=en` | `?lang=zh`
-- Three.js cyclorama for allocation structure. CI does not need Blender.
+- Three.js studio of stacked 1 g gold coins. CI does not need Blender.
 
 ## Setup
 

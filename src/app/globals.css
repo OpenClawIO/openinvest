@@ -9,6 +9,7 @@
   --copper: #8b97ad;
   --up: #00cc4b;
   --down: #ff4433;
+  --gold: #e4c36a;
   --line: rgba(255, 255, 255, 0.1);
   --ring-track: rgba(255, 255, 255, 0.12);
   --chip: rgba(255, 68, 51, 0.14);
@@ -107,6 +108,47 @@ body {
   height: 100%;
   margin: 0 auto;
   padding: 4.5rem 1.25rem 3.25rem;
+}
+
+.coin-piles {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2.75rem;
+  width: min(100%, 34rem);
+  height: 100%;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 3rem;
+}
+
+.coin-pile {
+  display: flex;
+  min-width: 4.5rem;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.coin-disc {
+  width: 4.35rem;
+  height: 1.05rem;
+  margin-top: -0.62rem;
+  border-radius: 50%;
+  background: radial-gradient(120% 90% at 32% 28%, #f8e6a8, #e4c36a 42%, #8f6a1f);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.coin-pile.is-active .coin-disc {
+  filter: brightness(1.08);
+}
+
+.coin-pile.is-dim .coin-disc {
+  opacity: 0.42;
+}
+
+.gold-mass {
+  color: var(--gold);
 }
 
 .structure-bar {

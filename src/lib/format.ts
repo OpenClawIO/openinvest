@@ -32,6 +32,14 @@ export function formatWeight(value: number) {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+export function formatGrams(value: number) {
+  const digits = value >= 10 ? 1 : 2;
+  return `${new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  }).format(value)} g`;
+}
+
 export function formatLongDate(isoDate: string, locale: "en" | "zh" = "en") {
   const date = new Date(`${isoDate}T00:00:00Z`);
   if (Number.isNaN(date.getTime())) return isoDate;

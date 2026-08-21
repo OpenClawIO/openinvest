@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { parseFlexXml } from "../src/lib/flex";
+import { withGoldQuote } from "./with-gold";
 
 const execFileAsync = promisify(execFile);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -29,7 +30,7 @@ async function main() {
 
   const reference = await sendRequest(token, queryId);
   const xml = await getStatement(token, reference);
-  const snapshot = parseFlexXml(xml);
+  const snapshot = await withGoldQuote(parseFlexXml(xml));
 
   const rawDir = join(root, "data", "raw");
   mkdirSync(rawDir, { recursive: true });
@@ -40,7 +41,7 @@ async function main() {
   );
 
   console.log(
-    `Synced ${snapshot.holdings.length} holdings, NAV ${snapshot.nav.toFixed(2)} ${snapshot.baseCurrency}, as of ${snapshot.asOf}.`,
+    `Synced ${snapshot.holdings.length} holdings, NAV ${snapshot.nav.toFixed(2)} ${snapshot.baseCurrency}, as of ${snapshot.asOf}${snapshot.gold ? `, gold ${snapshot.gold.usdPerGram.toFixed(2)}/g` : ""}.`,
   );
 }
 

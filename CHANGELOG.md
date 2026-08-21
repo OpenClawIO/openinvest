@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Rebuilt the page in Copilot’s money language: near-black navy canvas, monumental NAV, a green/red under-cost chip, and the cost-to-market line sitting on the number. Allocation volumes stay, but they now read as bright data on a dark stage.
+- Rebuilt the page around 1 g gold coins: lathed rounds with a rim and reeded edge, one coin per gram at the baked XAU/USD spot, stacks instead of boxes, NAV still static dollars with gold mass underneath.
 
 ## [0.3.0] - 2026-08-19
 
