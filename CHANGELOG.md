@@ -9,7 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Coins are now 1, 2, 5, and 10 g rounds with the gram mark on the face. Change is greedy from gold mass; dollars stay the static NAV.
+- Coins are now 1, 2, 5, and 10 g rounds with Au and the gold sun-mark on the face. Change is greedy from gold mass; dollars stay the static NAV.
 
 ## [0.3.0] - 2026-08-19
 

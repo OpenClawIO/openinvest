@@ -40,6 +40,10 @@ export function StructureBars({
                 data-denom={piece.denom}
                 style={{ opacity: piece.fill < 1 ? 0.72 : 1 }}
               >
+                <span className="coin-face-mark" aria-hidden>
+                  <span className="gold-mark" />
+                  Au
+                </span>
                 <span className="coin-face-num">{piece.denom}</span>
                 <span className="coin-face-unit">g</span>
               </span>

@@ -166,6 +166,33 @@ body {
   font-weight: 700;
 }
 
+.coin-face-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.18em;
+  margin-bottom: 0.12em;
+  font-size: 0.58em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.gold-mark {
+  position: relative;
+  display: inline-block;
+  width: 0.72em;
+  height: 0.72em;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.gold-mark::after {
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
 .coin-face[data-denom="10"] .coin-face-num {
   font-size: 1.7rem;
 }

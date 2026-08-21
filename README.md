@@ -18,7 +18,7 @@ The public page counts the book in **1, 2, 5, and 10 g gold coins**. Gram weight
 
 | Layer | What it shows |
 | --- | --- |
-| Structure | 1 / 2 / 5 / 10 g rounds, sized by mass, greedy change from market value / gold spot. Gram mark is on the face. |
+| Structure | 1 / 2 / 5 / 10 g rounds, sized by mass, greedy change from market value / gold spot. Au and the gram mark are on the face. |
 | Relationship | Cost and market on one ruler from zero. The segment between marks is P/L. |
 | Identity | Symbol, shares, cost, mark, and grams in HTML. Hover or click a stack to highlight its row. |
 | Time | Statement date on the stage. Gold spot is the quote at page build, not a live tick. |

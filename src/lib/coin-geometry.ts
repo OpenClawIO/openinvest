@@ -71,23 +71,56 @@ export function createStampTexture(grams: number): THREE.CanvasTexture {
   ctx.arc(size / 2, size / 2, size * 0.4 - 8, 0, Math.PI * 2);
   ctx.stroke();
 
+  const ink = "rgba(62, 38, 8, 0.88)";
+  const highlight = "rgba(255, 236, 180, 0.28)";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = `700 ${size * 0.36}px ui-sans-serif, system-ui, sans-serif`;
-  ctx.fillStyle = "rgba(255, 236, 180, 0.28)";
-  ctx.fillText(String(grams), size / 2 - 3, size / 2 - size * 0.05);
-  ctx.fillStyle = "rgba(62, 38, 8, 0.88)";
-  ctx.fillText(String(grams), size / 2, size / 2 - size * 0.04);
 
-  ctx.font = `600 ${size * 0.11}px ui-sans-serif, system-ui, sans-serif`;
+  ctx.font = `600 ${size * 0.09}px ui-sans-serif, system-ui, sans-serif`;
+  const au = "Au";
+  const auWidth = ctx.measureText(au).width;
+  const markY = size / 2 - size * 0.21;
+  const symbolR = size * 0.05;
+  const gap = size * 0.035;
+  const groupW = symbolR * 2 + gap + auWidth;
+  const markX = size / 2 - groupW / 2 + symbolR;
+  drawGoldMark(ctx, markX, markY, symbolR, ink);
+  ctx.fillStyle = ink;
+  ctx.fillText(au, markX + symbolR + gap + auWidth / 2, markY);
+
+  ctx.font = `700 ${size * 0.3}px ui-sans-serif, system-ui, sans-serif`;
+  ctx.fillStyle = highlight;
+  ctx.fillText(String(grams), size / 2 - 3, size / 2 + size * 0.02);
+  ctx.fillStyle = ink;
+  ctx.fillText(String(grams), size / 2, size / 2 + size * 0.03);
+
+  ctx.font = `600 ${size * 0.1}px ui-sans-serif, system-ui, sans-serif`;
   ctx.fillStyle = "rgba(62, 38, 8, 0.78)";
-  ctx.fillText("g", size / 2, size / 2 + size * 0.2);
+  ctx.fillText("g", size / 2, size / 2 + size * 0.22);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
   texture.needsUpdate = true;
   return texture;
+}
+
+function drawGoldMark(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  radius: number,
+  color: string,
+) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(2, radius * 0.22);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius * 0.34, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 function reedEdge(geometry: THREE.BufferGeometry, radius: number, half: number) {
