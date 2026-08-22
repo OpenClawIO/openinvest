@@ -5,7 +5,7 @@ import { formatAxisDate, formatMoney, pnlTone } from "@/lib/format";
 import type { DisplayCurrency } from "@/lib/fx";
 import type { Locale } from "@/lib/i18n";
 import type { EquityPoint } from "@/lib/portfolio";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 
 export function NavLine({
   series,
@@ -34,6 +34,26 @@ export function NavLine({
     tone === "up" ? "rgba(0, 204, 75, 0.16)" : tone === "down" ? "rgba(255, 68, 51, 0.16)" : "rgba(255,255,255,0.08)";
   const stroke = tone === "up" ? "var(--up)" : tone === "down" ? "var(--down)" : "var(--text)";
 
+  const onMove = (event: MouseEvent<SVGSVGElement>) => {
+    const svg = event.currentTarget;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return;
+    const point = svg.createSVGPoint();
+    point.x = event.clientX;
+    point.y = event.clientY;
+    const local = point.matrixTransform(ctm.inverse());
+    let nearest = layout.points[0];
+    let best = Infinity;
+    for (const row of layout.points) {
+      const dist = Math.abs(row.x - local.x);
+      if (dist < best) {
+        best = dist;
+        nearest = row;
+      }
+    }
+    if (nearest) setHoverAsOf(nearest.asOf);
+  };
+
   return (
     <div className="line-stage">
       <svg
@@ -41,6 +61,7 @@ export function NavLine({
         role="img"
         aria-label={ariaLabel}
         className="nav-line-plot"
+        onMouseMove={onMove}
         onMouseLeave={() => setHoverAsOf(null)}
       >
         {layout.yTicks.map((tick) => (
@@ -80,65 +101,41 @@ export function NavLine({
           strokeLinejoin="round"
           strokeLinecap="round"
         />
-        {layout.points.map((point) => {
-          const isActive = active?.asOf === point.asOf;
-          return (
-            <g key={point.asOf}>
-              <circle
-                cx={point.x}
-                cy={point.yCost}
-                r={3}
-                fill="var(--bg)"
-                stroke="var(--faint)"
-                strokeWidth="1.5"
-              />
-              <circle
-                cx={point.x}
-                cy={point.yNav}
-                r={isActive ? 5.5 : 4}
-                fill={stroke}
-                stroke="var(--bg)"
-                strokeWidth="2"
-              />
-              <rect
-                x={point.x - 18}
-                y={layout.inner.top}
-                width="36"
-                height={layout.inner.bottom - layout.inner.top}
-                fill="transparent"
-                onMouseEnter={() => setHoverAsOf(point.asOf)}
-              />
-              <text
-                x={point.x}
-                y={layout.height - 10}
-                textAnchor="middle"
-                className="chart-axis"
-              >
-                {formatAxisDate(point.asOf, locale)}
-              </text>
-            </g>
-          );
-        })}
-        {active ? (
-          <text
-            x={active.x > layout.width * 0.72 ? active.x - 10 : active.x + 10}
-            y={active.yNav - 12}
-            textAnchor={active.x > layout.width * 0.72 ? "end" : "start"}
-            className="chart-callout"
-          >
-            {formatMoney(active.nav, 0, currency)}
+        {layout.xTicks.map((tick) => (
+          <text key={tick.asOf} x={tick.x} y={layout.height - 10} textAnchor="middle" className="chart-axis">
+            {formatAxisDate(tick.asOf, locale)}
           </text>
+        ))}
+        {active ? (
+          <g>
+            <circle
+              cx={active.x}
+              cy={active.yNav}
+              r={5}
+              fill={stroke}
+              stroke="var(--bg)"
+              strokeWidth="2"
+            />
+            <text
+              x={active.x > layout.width * 0.72 ? active.x - 10 : active.x + 10}
+              y={active.yNav - 12}
+              textAnchor={active.x > layout.width * 0.72 ? "end" : "start"}
+              className="chart-callout"
+            >
+              {formatMoney(active.nav, 0, currency)}
+            </text>
+          </g>
         ) : null}
       </svg>
       <p className="chart-legend">
-          <span>
-            <span className="chart-swatch is-nav" style={{ background: stroke }} />
-            {navLabel}
-          </span>
-          <span>
-            <span className="chart-swatch is-cost" />
-            {costLabel}
-          </span>
+        <span>
+          <span className="chart-swatch is-nav" style={{ background: stroke }} />
+          {navLabel}
+        </span>
+        <span>
+          <span className="chart-swatch is-cost" />
+          {costLabel}
+        </span>
       </p>
     </div>
   );

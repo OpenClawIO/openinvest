@@ -5,6 +5,11 @@ on:
     # 02:00 UTC Tue–Sat ≈ after the US cash close Mon–Fri, with Flex lag.
     - cron: "0 2 * * 2-6"
   workflow_dispatch:
+    inputs:
+      period_days:
+        description: Flex lookback in days (1–365). Empty uses the saved query period.
+        required: false
+        default: "90"
 
 permissions:
   contents: write
@@ -41,6 +46,7 @@ jobs:
         env:
           IBKR_FLEX_TOKEN: ${{ secrets.IBKR_FLEX_TOKEN }}
           IBKR_FLEX_QUERY_ID: ${{ secrets.IBKR_FLEX_QUERY_ID }}
+          IBKR_FLEX_PERIOD_DAYS: ${{ github.event.inputs.period_days }}
 
       - name: Commit public snapshot
         run: |

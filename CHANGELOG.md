@@ -9,7 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Replace cash notes with an allocation pie and a statement NAV line. The line uses Flex close dates already in the book (14 / 18 / 19 Aug), not invented ticks. Sync appends the next statement point.
+- Replace cash notes with an allocation pie and a statement NAV line. The line uses Flex close dates already in the book, not invented ticks. Sync can pull a Flex date range and merge `EquitySummary` closes into `series`.
+- Statement line x-axis thins to month marks when the book has more than a handful of closes.
 
 ## [0.3.0] - 2026-08-19
 

@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import type { PublicHolding, PublicSnapshot, PublicTrade } from "./portfolio";
+import type { EquityPoint, PublicHolding, PublicSnapshot, PublicTrade } from "./portfolio";
 
 type AttrMap = Record<string, unknown>;
 
@@ -15,20 +15,19 @@ export function parseFlexXml(xml: string): PublicSnapshot {
   const doc = parser.parse(xml) as AttrMap;
   failIfFlexError(doc);
 
-  const statement = first(
+  const statements = list(
     walk(doc, ["FlexQueryResponse", "FlexStatements", "FlexStatement"]),
   );
+  const statement = statements.reduce<AttrMap | undefined>((latest, row) => {
+    if (!latest) return row;
+    return statementDate(row) > statementDate(latest) ? row : latest;
+  }, undefined);
   if (!statement) {
     throw new Error("Flex XML did not contain a FlexStatement");
   }
 
   const whenGenerated = formatFlexDateTime(str(statement, "whenGenerated"));
-  const asOf = formatFlexDate(
-    str(statement, "toDate") ||
-      str(statement, "fromDate") ||
-      whenGenerated.slice(0, 10) ||
-      new Date().toISOString().slice(0, 10),
-  );
+  const asOf = statementDate(statement) || whenGenerated.slice(0, 10) || new Date().toISOString().slice(0, 10);
 
   const holdings = collect(statement, "OpenPositions", "OpenPosition")
     .map(toHolding)
@@ -39,12 +38,13 @@ export function parseFlexXml(xml: string): PublicSnapshot {
     .map(toTrade)
     .filter((row) => row.symbol.length > 0);
 
-  const equityRows = collect(
-    statement,
-    "EquitySummaryInBase",
-    "EquitySummaryByReportDateInBase",
+  const equityRows = statements.flatMap((row) =>
+    collect(row, "EquitySummaryInBase", "EquitySummaryByReportDateInBase"),
   );
-  const latestEquity = equityRows.at(-1) ?? first(equityRows);
+  const latestEquity =
+    equityRows.find((row) => formatFlexDate(str(row, "reportDate")) === asOf) ??
+    equityRows.at(-1) ??
+    first(equityRows);
   const changeNav = first(
     collect(statement, "ChangeInNAV", "ChangeInNAV"),
   );
@@ -69,6 +69,7 @@ export function parseFlexXml(xml: string): PublicSnapshot {
     unrealizedPnl: withWeights.reduce((sum, row) => sum + row.unrealizedPnl, 0),
     holdings: withWeights,
     trades,
+    series: seriesFromEquity(equityRows),
   };
 }
 
@@ -143,9 +144,31 @@ function walk(node: unknown, path: string[]): unknown {
   return current;
 }
 
+function seriesFromEquity(rows: AttrMap[]): EquityPoint[] {
+  const byDate = new Map<string, EquityPoint>();
+  for (const row of rows) {
+    const asOf = formatFlexDate(str(row, "reportDate"));
+    const nav = num(row, "total");
+    if (!asOf || !nav) continue;
+    byDate.set(asOf, { asOf, nav, costBasis: 0 });
+  }
+  return [...byDate.values()].sort((a, b) => a.asOf.localeCompare(b.asOf));
+}
+
+function statementDate(statement: AttrMap): string {
+  return formatFlexDate(
+    str(statement, "toDate") || str(statement, "fromDate"),
+  );
+}
+
+function list(value: unknown): AttrMap[] {
+  if (Array.isArray(value)) return value.map(asRecord).filter(Boolean) as AttrMap[];
+  const one = asRecord(value);
+  return one ? [one] : [];
+}
+
 function first(value: unknown): AttrMap | undefined {
-  if (Array.isArray(value)) return asRecord(value[0]);
-  return asRecord(value);
+  return list(value)[0];
 }
 
 function asRecord(value: unknown): AttrMap | undefined {

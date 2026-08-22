@@ -29,7 +29,16 @@ async function main() {
     );
   }
 
-  const reference = await sendRequest(token, queryId);
+  const range = flexDateOverride();
+  let reference: string;
+  try {
+    reference = await sendRequest(token, queryId, range);
+  } catch (error) {
+    if (!range) throw error;
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`Date override rejected (${message}); using the query’s saved period.`);
+    reference = await sendRequest(token, queryId);
+  }
   const xml = await getStatement(token, reference);
   const snapshot = withSeries(await withFxQuote(parseFlexXml(xml)), join(root, "data", "public.json"));
 
@@ -41,16 +50,31 @@ async function main() {
     `${JSON.stringify(snapshot, null, 2)}\n`,
   );
 
+  const series = snapshot.series ?? [];
   console.log(
-    `Synced ${snapshot.holdings.length} holdings, NAV ${snapshot.nav.toFixed(2)} ${snapshot.baseCurrency}, as of ${snapshot.asOf}${snapshot.fx ? `, USD/CNY ${snapshot.fx.usdCny.toFixed(4)}` : ""}.`,
+    `Synced ${snapshot.holdings.length} holdings, NAV ${snapshot.nav.toFixed(2)} ${snapshot.baseCurrency}, as of ${snapshot.asOf}${snapshot.fx ? `, USD/CNY ${snapshot.fx.usdCny.toFixed(4)}` : ""}${series.length ? `, ${series.length} statement points ${series[0].asOf}–${series.at(-1)?.asOf}` : ""}.`,
   );
 }
 
-async function sendRequest(token: string, queryId: string): Promise<string> {
+type FlexDateOverride =
+  | { period: string }
+  | { from: string; to: string };
+
+async function sendRequest(
+  token: string,
+  queryId: string,
+  range?: FlexDateOverride,
+): Promise<string> {
   const url = new URL(SEND_URL);
   url.searchParams.set("t", token);
   url.searchParams.set("q", queryId);
   url.searchParams.set("v", "3");
+  if (range && "period" in range) {
+    url.searchParams.set("p", range.period);
+  } else if (range) {
+    url.searchParams.set("fd", range.from);
+    url.searchParams.set("td", range.to);
+  }
   const xml = await fetchText(url);
   const reference = xml.match(/<ReferenceCode>([^<]+)<\/ReferenceCode>/i)?.[1];
   const status = xml.match(/<Status>([^<]+)<\/Status>/i)?.[1];
@@ -116,6 +140,38 @@ function loadEnvLocal(path: string) {
     const value = trimmed.slice(eq + 1).trim();
     if (key && process.env[key] == null) process.env[key] = value;
   }
+}
+
+function flexDateOverride(): FlexDateOverride | undefined {
+  const period = process.env.IBKR_FLEX_PERIOD_DAYS?.trim();
+  const from = flexDay(process.env.IBKR_FLEX_FROM);
+  const to = flexDay(process.env.IBKR_FLEX_TO);
+  if (period) {
+    const days = Number(period);
+    if (!Number.isInteger(days) || days < 1 || days > 365) {
+      throw new Error("IBKR_FLEX_PERIOD_DAYS must be an integer 1–365");
+    }
+    return { period: String(days) };
+  }
+  if (from || to) {
+    if (!from || !to) {
+      throw new Error(
+        "IBKR_FLEX_FROM and IBKR_FLEX_TO must be set together (YYYY-MM-DD or YYYYMMDD)",
+      );
+    }
+    return { from, to };
+  }
+  return undefined;
+}
+
+function flexDay(raw: string | undefined): string | undefined {
+  const value = raw?.trim();
+  if (!value) return undefined;
+  const compact = value.replaceAll("-", "");
+  if (!/^\d{8}$/.test(compact)) {
+    throw new Error(`Invalid Flex date ${value}; use YYYY-MM-DD or YYYYMMDD`);
+  }
+  return compact;
 }
 
 function required(name: string): string {

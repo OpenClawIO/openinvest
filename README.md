@@ -32,7 +32,7 @@ Published in `data/public.json` and on the site:
 
 - Net asset value, cash, unrealized P/L
 - Each holding: symbol, shares, average cost, mark, market value, weight
-- Statement NAV series (`asOf`, NAV, cost basis) as the book grows
+- Statement NAV series (`asOf`, NAV, cost basis) from Flex closes. A date-range pull can backfill `EquitySummary` days; the line is never interpolated.
 - USD/CNY at page build (used by the Chinese page)
 - Fills for the Flex query window (usually last business day)
 

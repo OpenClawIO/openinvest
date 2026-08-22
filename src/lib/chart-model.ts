@@ -216,8 +216,24 @@ export function layoutLine(
     bandPath: band.length ? `${polyline(band)} Z` : "",
     points,
     yTicks: scale.ticks.map((value) => ({ value, y: yAt(value) })),
-    xTicks: points.map((point) => ({ asOf: point.asOf, x: point.x })),
+    xTicks: monthTicks(points).map((point) => ({ asOf: point.asOf, x: point.x })),
     yMin: scale.min,
     yMax: scale.max,
   };
+}
+
+function monthTicks(points: LinePoint[]): LinePoint[] {
+  if (points.length <= 5) return points;
+  const picked: LinePoint[] = [];
+  let month = "";
+  for (const point of points) {
+    const key = point.asOf.slice(0, 7);
+    if (key !== month) {
+      picked.push(point);
+      month = key;
+    }
+  }
+  const last = points.at(-1);
+  if (last && picked.at(-1)?.asOf !== last.asOf) picked.push(last);
+  return picked;
 }
