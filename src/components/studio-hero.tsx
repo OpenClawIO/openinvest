@@ -1,8 +1,10 @@
 "use client";
 
 import { AllocationPie } from "@/components/allocation-pie";
+import { KeySilhouette } from "@/components/key-silhouette";
 import { NavLine } from "@/components/nav-line";
 import { StructureKey } from "@/components/structure-key";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { allocationValues, slicesFromSnapshot } from "@/lib/chart-model";
 import { seriesForChart } from "@/lib/equity";
 import {
@@ -17,7 +19,13 @@ import {
 import { currencyForLocale, toDisplayAmount } from "@/lib/fx";
 import type { Copy, Locale } from "@/lib/i18n";
 import type { PublicSnapshot } from "@/lib/portfolio";
-import { useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
+import { Suspense, useCallback, useMemo } from "react";
+
+const KeyCanvas = dynamic(
+  () => import("@/components/key-stage").then((mod) => mod.KeyStage),
+  { ssr: false, loading: () => <div className="studio-stage-slot" /> },
+);
 
 function kicker(locale: Locale) {
   return locale === "zh" ? "kicker-zh" : "kicker";
@@ -44,6 +52,7 @@ export function StudioHero({
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
 }) {
+  const reduced = usePrefersReducedMotion();
   const asOf = formatLongDate(snapshot.asOf, locale);
   const currency = currencyForLocale(locale);
   const amount = useCallback(
@@ -84,6 +93,18 @@ export function StudioHero({
           <span className="font-num">{formatPct(vsCost)}</span>
           <span>{statusCopy(snapshot.unrealizedPnl, t)}</span>
         </p>
+      </div>
+
+      <div className="studio-frame">
+        <Suspense fallback={<div className="studio-stage-slot" />}>
+          {reduced ? (
+            <div className="studio-stage-slot key-fallback">
+              <KeySilhouette />
+            </div>
+          ) : (
+            <KeyCanvas />
+          )}
+        </Suspense>
       </div>
 
       <div className="chart-board">

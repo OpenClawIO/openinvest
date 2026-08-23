@@ -9,6 +9,7 @@
     "lint": "eslint",
     "sync": "tsx scripts/sync-flex.ts",
     "rebuild": "tsx scripts/rebuild-snapshot.ts",
+    "key": "blender --background --python scripts/export-key.py",
     "version": "node scripts/check-changelog.mjs"
   },
   "dependencies": {

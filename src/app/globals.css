@@ -371,6 +371,17 @@ body {
   background: var(--bg);
 }
 
+.key-fallback {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+}
+
+.key-silhouette {
+  width: min(100%, 28rem);
+  height: auto;
+}
+
 .studio-caption,
 .ledger {
   margin: 0 auto;

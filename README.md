@@ -12,19 +12,20 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page is a **pie and a line**. The pie is market weight. The line is statement NAV against cost. English amounts are dollars. 中文 amounts are yuan at the baked USD/CNY rate.
+The public page opens with a **天圆地方 key**: a mutton-fat jade circle and a gold square stem. Below it, a pie is market weight and a line is statement NAV against cost.
 
-当前公开页是饼图加折线。饼图是仓位权重，折线是报表净资产相对成本。英文为美元，中文为人民币。
+当前公开页先是一把天圆地方钥匙：羊脂玉为圆，黄金为方。下面饼图是仓位，折线是报表净资产相对成本。
 
 | Layer | What it shows |
 | --- | --- |
+| Object | Jade bi (heaven) with a gold square stem (earth). Drag to turn. |
 | Structure | Donut of holdings by market value. Hover or click a slice to pin its row. |
 | Relationship | Statement NAV as a line, cost as a dashed path. The band between them is P/L. |
 | Identity | Symbol, shares, cost, mark, and amount in HTML. |
 | Time | Statement dates on the line. No invented ticks. USD/CNY is the quote at page build. |
 | Language | `English` / `中文` on the same page. English amounts are dollars; 中文 amounts are yuan. |
 
-净资产数字是静态的。英文为 `formatMoney(..., "USD")`，中文为人民币。系统开启减少动态时，图表仍是同一几何，只去掉过渡。
+净资产数字是静态的。英文为 `formatMoney(..., "USD")`，中文为人民币。系统开启减少动态时，钥匙改为同一轮廓的平面图。
 
 ## What is public / 公开范围
 
@@ -51,6 +52,7 @@ Never published (keep out of git and the frontend):
 - Flex Web Service v3 → `data/public.json`
 - Same-page locale: `?lang=en` | `?lang=zh`
 - SVG pie (weight) and line (statement NAV vs cost)
+- Blender key (`npm run key`) exported as `public/models/key.glb` and shown with Three.js
 
 ## Setup
 

@@ -37,5 +37,6 @@ data/raw/
 # local browser traces
 .playwright-cli/
 
-# optional Blender meshes — the live stage is procedural Three.js
-/public/models/
+# optional Blender meshes except the key shown on the public page
+/public/models/*
+!/public/models/key.glb
