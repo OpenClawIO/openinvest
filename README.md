@@ -12,9 +12,9 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page opens with a **天圆地方 key**: a cabochon mutton-fat jade bi, gold-lined square hole, round gold stem, and a 回-pattern bit. Below it, a pie is market weight and a line is statement NAV against cost.
+The public page opens with a **天圆地方 key** laid horizontal: a cabochon mutton-fat jade bi, gold-lined square hole, round gold stem, and a 回-pattern bit. Below it, a pie is market weight and a line is statement NAV against cost.
 
-当前公开页先是一把天圆地方钥匙：羊脂玉璧、方孔包金、圆茎、回纹匙齿。下面饼图是仓位，折线是报表净资产相对成本。
+当前公开页先是一把横放的天圆地方钥匙：羊脂玉璧、方孔包金、圆茎、回纹匙齿。下面饼图是仓位，折线是报表净资产相对成本。
 
 | Layer | What it shows |
 | --- | --- |

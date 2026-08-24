@@ -85,8 +85,8 @@ body {
 
 .studio-frame {
   position: relative;
-  height: min(64vh, 640px);
-  min-height: 360px;
+  height: min(52vh, 520px);
+  min-height: 300px;
 }
 
 .studio-plate {
@@ -378,8 +378,8 @@ body {
 }
 
 .key-silhouette {
-  width: auto;
-  height: min(100%, 22rem);
+  width: min(100%, 28rem);
+  height: auto;
 }
 
 .studio-caption,
