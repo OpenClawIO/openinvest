@@ -8,27 +8,29 @@ import { Suspense, useMemo } from "react";
 import * as THREE from "three";
 
 const STUDIO = "#000814";
-const LOOK_AT: [number, number, number] = [0.05, 0.04, 0];
-const KEY_URL = assetPath("/models/key.glb?v=3");
+const LOOK_AT: [number, number, number] = [0.12, 0.86, 0];
+const KEY_URL = assetPath("/models/key.glb?v=16");
 
 const jadeMaterial = new THREE.MeshPhysicalMaterial({
   color: JADE_COLOR,
-  roughness: 0.22,
+  roughness: 0.28,
   metalness: 0,
-  transmission: 0.08,
-  thickness: 0.4,
+  transmission: 0.1,
+  thickness: 0.22,
   ior: 1.61,
-  clearcoat: 0.45,
+  clearcoat: 0.42,
   clearcoatRoughness: 0.2,
-  sheen: 0.25,
-  sheenColor: "#fff6e4",
+  attenuationColor: "#9fb89a",
+  attenuationDistance: 0.36,
+  sheen: 0.28,
+  sheenColor: "#e4eedc",
 });
 
 const goldMaterial = new THREE.MeshStandardMaterial({
   color: GOLD_COLOR,
-  metalness: 0.72,
-  roughness: 0.3,
-  envMapIntensity: 1.8,
+  metalness: 0.92,
+  roughness: 0.15,
+  envMapIntensity: 1.75,
 });
 
 function HeavenEarthKey() {
@@ -41,46 +43,45 @@ function HeavenEarthKey() {
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       const name = `${mesh.name} ${mesh.parent?.name ?? ""}`.toLowerCase();
-      const verts = mesh.geometry.getAttribute("position")?.count ?? 0;
-      mesh.material = name.includes("jade") || verts > 400 ? jadeMaterial : goldMaterial;
+      mesh.material = name.includes("jade") ? jadeMaterial : goldMaterial;
     });
     return next;
   }, [scene]);
-  return <primitive object={model} />;
+  return <primitive object={model} rotation={[0, Math.PI * 0.11, 0]} />;
 }
 
 function Studio() {
   return (
     <>
       <Environment resolution={256}>
-        <Lightformer intensity={3.2} position={[-2.4, 2.6, 2.2]} scale={[6, 4, 1]} color="#fff3dc" />
-        <Lightformer intensity={0.75} position={[3.1, 1.1, -1.8]} scale={[4, 3, 1]} color="#9eb4d4" />
+        <Lightformer intensity={2.8} position={[-2.2, 2.8, 2.4]} scale={[6, 4, 1]} color="#fff3dc" />
+        <Lightformer intensity={0.7} position={[3.0, 1.4, -1.6]} scale={[4, 3, 1]} color="#9eb4d4" />
       </Environment>
       <directionalLight
-        position={[2.2, 4.0, 2.0]}
-        intensity={1.55}
+        position={[2.0, 3.6, 2.4]}
+        intensity={1.45}
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
-      <directionalLight position={[-1.6, 1.8, 3.2]} intensity={0.85} color="#fff1d2" />
-      <hemisphereLight args={["#fff4dc", "#1a2233", 0.55]} />
-      <ambientLight intensity={0.28} />
+      <directionalLight position={[-1.8, 1.6, 2.8]} intensity={0.72} color="#fff1d2" />
+      <hemisphereLight args={["#fff4dc", "#1a2233", 0.46]} />
+      <ambientLight intensity={0.22} />
       <HeavenEarthKey />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.001, 0]} receiveShadow>
         <planeGeometry args={[24, 24]} />
         <meshStandardMaterial color={STUDIO} roughness={1} metalness={0} />
       </mesh>
-      <ContactShadows position={[0, 0.001, 0]} opacity={0.52} scale={8} blur={2.2} far={2.8} />
+      <ContactShadows position={[0, 0.001, 0]} opacity={0.5} scale={8} blur={2.2} far={3.2} />
       <OrbitControls
         makeDefault
         target={LOOK_AT}
         enablePan={false}
         enableDamping
         dampingFactor={0.08}
-        minDistance={1.6}
-        maxDistance={5.2}
-        minPolarAngle={Math.PI * 0.22}
-        maxPolarAngle={Math.PI * 0.46}
+        minDistance={2.1}
+        maxDistance={5.8}
+        minPolarAngle={Math.PI * 0.34}
+        maxPolarAngle={Math.PI * 0.52}
         enableZoom={false}
       />
     </>
@@ -94,11 +95,11 @@ export function KeyStage() {
       shadows
       dpr={[1, 1.6]}
       gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      camera={{ position: [0.28, 1.42, 2.05], fov: 30, near: 0.1, far: 40 }}
+      camera={{ position: [1.05, 0.88, 3.9], fov: 28, near: 0.1, far: 40 }}
       onCreated={({ camera, gl }) => {
         camera.lookAt(...LOOK_AT);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.06;
+        gl.toneMappingExposure = 1.02;
         gl.shadowMap.type = THREE.PCFShadowMap;
       }}
     >

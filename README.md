@@ -12,13 +12,13 @@ See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
 ## Presentation / 呈现
 
-The public page opens with a **天圆地方 key**: a mutton-fat jade circle and a gold square stem. Below it, a pie is market weight and a line is statement NAV against cost.
+The public page opens with a **天圆地方 key**: a cabochon mutton-fat jade bi, gold-lined square hole, round gold stem, and a 回-pattern bit. Below it, a pie is market weight and a line is statement NAV against cost.
 
-当前公开页先是一把天圆地方钥匙：羊脂玉为圆，黄金为方。下面饼图是仓位，折线是报表净资产相对成本。
+当前公开页先是一把天圆地方钥匙：羊脂玉璧、方孔包金、圆茎、回纹匙齿。下面饼图是仓位，折线是报表净资产相对成本。
 
 | Layer | What it shows |
 | --- | --- |
-| Object | Jade bi (heaven) with a gold square stem (earth). Drag to turn. |
+| Object | Jade bi (heaven) with a gold-lined square hole and round stem (earth). Drag to turn. |
 | Structure | Donut of holdings by market value. Hover or click a slice to pin its row. |
 | Relationship | Statement NAV as a line, cost as a dashed path. The band between them is P/L. |
 | Identity | Symbol, shares, cost, mark, and amount in HTML. |

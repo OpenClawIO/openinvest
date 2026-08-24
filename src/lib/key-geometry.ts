@@ -8,5 +8,5 @@ export const KEY = {
   bit: 0.22,
 } as const;
 
-export const JADE_COLOR = "#f3ead6";
-export const GOLD_COLOR = "#e4c36a";
+export const JADE_COLOR = "#8fbe9a";
+export const GOLD_COLOR = "#e0b24a";
