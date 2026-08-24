@@ -73,7 +73,7 @@ body {
   top: 0;
   z-index: 20;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding-top: max(0.9rem, env(safe-area-inset-top));
@@ -413,6 +413,19 @@ body {
 }
 
 @media (min-width: 640px) {
+  .company-tagline {
+    display: block;
+  }
+
+  .company-mark {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .company-core {
+    font-size: 1.32rem;
+  }
+
   .studio-bar {
     padding-top: max(1.15rem, env(safe-area-inset-top));
     padding-right: max(2rem, env(safe-area-inset-right));
@@ -551,6 +564,98 @@ body {
   letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   font-feature-settings: "ss01" 1;
+}
+
+.company-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.company-mark {
+  width: 2.15rem;
+  height: 2.15rem;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 0.28rem;
+}
+
+.company-copy {
+  min-width: 0;
+}
+
+.company-zh {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.28rem;
+  line-height: 1.1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.company-prefix,
+.company-suffix {
+  font-family: var(--font-cjk);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  padding-top: 0.14em;
+}
+
+.company-core {
+  font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.company-en {
+  margin-top: 0.22rem;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-tagline {
+  display: none;
+  margin-top: 0.28rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.company-legal {
+  color: var(--text);
+}
+
+@media (max-width: 479px) {
+  .company-mark {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .company-core {
+    font-size: 0.98rem;
+  }
+
+  .company-prefix,
+  .company-suffix {
+    font-size: 0.55rem;
+  }
+
+  .company-en {
+    font-size: 7.5px;
+    letter-spacing: 0.05em;
+  }
 }
 
 .ticker {

@@ -1,5 +1,6 @@
 "use client";
 
+import { CompanyLockup } from "@/components/company-lockup";
 import { LanguageSwitch } from "@/components/language-switch";
 import { PriceRuler } from "@/components/measure-ruler";
 import { StudioHero } from "@/components/studio-hero";
@@ -51,10 +52,7 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
   return (
     <div className="studio-page">
       <header className="studio-bar">
-        <div className="min-w-0">
-          <p className="brand-mark text-[10px] text-[var(--text)] sm:text-[11px]">{t.brand}</p>
-          <p className="mt-1 hidden text-sm text-[var(--muted)] sm:block">{t.tagline}</p>
-        </div>
+        <CompanyLockup t={t} showTagline />
         <div className="flex shrink-0 items-baseline gap-4 sm:gap-5">
           <p className="hidden font-num text-xs text-[var(--muted)] sm:block">
             {asOf} · T+1
@@ -133,6 +131,10 @@ export function PortfolioView({ snapshot }: { snapshot: PublicSnapshot }) {
         </section>
 
         <footer className="fine-print mt-14 max-w-3xl sm:mt-20">
+          <span className="company-legal">{t.companyLegalZh}</span>
+          <span className="mx-1.5 text-[var(--faint)]">·</span>
+          <span className="company-legal">{t.companyLegal}</span>
+          <span className="mx-1.5 text-[var(--faint)]">·</span>
           {t.footer(
             snapshot.generatedAt ? snapshot.generatedAt.replace("T", " ") : undefined,
           )}{" "}

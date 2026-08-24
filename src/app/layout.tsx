@@ -16,9 +16,9 @@ const display = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "OpenInvest — Public account / 公开投资账户",
+  title: "南京慧言能策科技有限公司 — OpenInvest",
   description:
-    "A public Interactive Brokers snapshot. Updated after the US cash close. Not investment advice. 个人盈透账户日终快照，不构成投资建议。",
+    "Nanjing Huiyan Nengce Technology Co., Ltd. A public Interactive Brokers snapshot. Updated after the US cash close. Not investment advice. 个人盈透账户日终快照，不构成投资建议。",
 };
 
 export const viewport: Viewport = {

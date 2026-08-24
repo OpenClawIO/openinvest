@@ -1,5 +1,6 @@
 "use client";
 
+import { CompanyLockup } from "@/components/company-lockup";
 import { LanguageSwitch } from "@/components/language-switch";
 import { useLocale } from "@/components/locale-provider";
 import { PortfolioView } from "@/components/portfolio-view";
@@ -15,7 +16,7 @@ function EmptyState() {
   return (
     <main className="page-shell mx-auto max-w-xl">
       <div className="flex items-center justify-between gap-3">
-        <p className="brand-mark text-[11px] text-[var(--text)]">{t.brand}</p>
+        <CompanyLockup t={t} />
         <LanguageSwitch />
       </div>
       <h1 className="font-money mt-8 text-[clamp(2.2rem,8vw,3.25rem)] leading-[0.95] sm:mt-10">

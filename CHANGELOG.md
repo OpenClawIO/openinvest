@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Header and footer use the 言策 lockup with the legal name 南京慧言能策科技有限公司 / Nanjing Huiyan Nengce Technology Co., Ltd.
 - Replace cash notes with an allocation pie and a statement NAV line. The line uses Flex close dates already in the book, not invented ticks. Sync can pull a Flex date range and merge `EquitySummary` closes into `series`.
 - Statement line x-axis thins to month marks when the book has more than a handful of closes.
 - Present the book as a 天圆地方 key: a cabochon mutton-fat jade bi with a gold-lined square hole, round gold stem, and a 回-pattern bit, laid horizontal in Three.js. `prefers-reduced-motion` uses the same silhouette.

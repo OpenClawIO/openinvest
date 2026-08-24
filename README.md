@@ -1,6 +1,6 @@
 # OpenInvest
 
-**v0.3.0** — a public book for one personal Interactive Brokers account.
+**v0.3.0** — a public book for one personal Interactive Brokers account, presented by 南京慧言能策科技有限公司 (Nanjing Huiyan Nengce Technology Co., Ltd.).
 
 English | 中文 on the same page. Snapshot after the US cash close, not live quotes. Not investment advice, not an IBKR product.
 
